@@ -2,13 +2,18 @@
 
 import { motion } from "motion/react";
 
-import CardBack from "@/cards/CardBack";
-import Clubs2 from "@/cards/Clubs2";
+import CardBack from "@/generated/cards/back-blue";
+
+import Clubs2 from "@/generated/cards/c2";
+import Diamonds2 from "@/generated/cards/d2";
 import * as React from "react";
 import styled, { css } from "styled-components";
 
+
 const cardIdMap = {
-  "2C": Clubs2,
+  "C2": Clubs2,
+  "D2": Diamonds2
+  // "2D": Diamonds2,
 };
 
 type Status = "faceUp" | "faceDown";
@@ -35,7 +40,7 @@ function Card({ id, initStatus = "faceDown" }: Props) {
       }}
     >
       <FrontFace>
-        <CardElement height={250} />
+        <CardElement height={250}/>
       </FrontFace>
       <BackFace>
         <CardBack height={250} />
