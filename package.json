@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build:cards": "svgr --out-dir src/cards svg/cards --config-file svgr.config.js"
+    "build:cards": "svgr --out-dir src/generated/cards svg/cards --config-file svgr.config.js"
   },
   "dependencies": {
     "motion": "^12.7.3",
