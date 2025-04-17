@@ -10,6 +10,7 @@
     "build:cards": "svgr --out-dir src/generated/cards svg/cards --config-file svgr.config.js"
   },
   "dependencies": {
+    "lodash": "^4.17.21",
     "motion": "^12.7.3",
     "next": "15.3.0",
     "react": "^19.0.0",
@@ -19,6 +20,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@svgr/cli": "^8.1.0",
+    "@types/lodash": "^4.17.16",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

@@ -130,14 +130,12 @@ function Card({ id, initStatus = "faceDown" }: Props) {
   const [status, setStatus] = React.useState<Status>(initStatus);
   const CardElement = cardIdMap[id];
 
-  console.log({ status });
   return (
     <Wrapper
       initial={{ rotateY: status === "faceUp" ? 0 : 180 }}
       animate={{ rotateY: status === "faceUp" ? 0 : 180 }}
       transition={{ type: "spring", duration: 1, bounce: 0.4 }}
       onClick={() => {
-        console.log("click");
         setStatus((prev) => (prev === "faceUp" ? "faceDown" : "faceUp"));
       }}
     >
@@ -155,6 +153,8 @@ const Wrapper = styled(motion.div)`
   width: fit-content;
   position: relative;
   transform-style: preserve-3d;
+  height: 180px;
+  width: 127.42px;
 `;
 
 const Face = css`
@@ -175,4 +175,4 @@ const BackFace = styled.div`
   transform: rotateY(180deg);
 `;
 
-export default Card;
+export default React.memo(Card);
