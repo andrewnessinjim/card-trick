@@ -1,47 +1,15 @@
 import * as React from "react";
 import styled from "styled-components";
 
-import _ from "lodash";
-
 import Card, { CardId } from "../Card";
-import { motion, MotionProps } from "motion/react";
+import { motion } from "motion/react";
+import TableWashShuffler from "./TableWashShuffler";
 
 interface Card {
   id: CardId;
 }
 
-const randomDelays = _.shuffle(_.range(0.05, 0.05 * 53, 0.05));
-
-function cardMovementAnimation(
-  id: CardId,
-  index: number,
-  status: Status
-): MotionProps {
-  return {
-    layoutId: id,
-    animate:
-      status === "fanning-out"
-        ? {
-            rotate: (index - 32) * -2,
-            y: _.random(90, 300),
-            x: _.random(-225, 225),
-          }
-        : {
-            rotate: 0,
-            y: 0,
-            x: 0,
-          },
-
-    transition: {
-      type: "spring",
-      duration: 1,
-      restDelta: 0.1,
-      delay: randomDelays[index],
-    },
-  };
-}
-
-type Status = "idle" | "stacking" | "fanning-out" | "fanning-in" | "shuffling";
+type Status = "idle" | "animating-shuffle";
 function Deck() {
   const [deck, setDeck] = React.useState<Card[]>([
     { id: "C2" },
@@ -98,40 +66,30 @@ function Deck() {
     { id: "SA" },
   ]);
   const [status, setStatus] = React.useState<Status>("idle");
-  const cardMovedCount = React.useRef(0);
 
   const shuffleDeck = () => {
-    const t0 = performance.now();
     const shuffledDeck = [...deck].sort(() => Math.random() - 0.5);
-    const t1 = performance.now();
-    console.log("Shuffle time: ", t1 - t0);
     setDeck(shuffledDeck);
-    setStatus("fanning-out");
+    setStatus("animating-shuffle");
   };
 
-  console.log({ status, deck });
+  const animatingShuffle = status === "animating-shuffle";
+
   return (
     <Wrapper>
       <button onClick={() => shuffleDeck()}>Shuffle</button>
       <DeckWrapper>
-        {deck.map((card, index) => (
-          <CardSlot key={card.id}>
-            <CardMovementAnimator
-              {...cardMovementAnimation(card.id, index, status)}
-              onAnimationComplete={() => {
-                if (status === "fanning-out") {
-                  cardMovedCount.current += 1;
-                  if (cardMovedCount.current === deck.length) {
-                    cardMovedCount.current = 0;
-                    setStatus("idle");
-                  }
-                }
-              }}
-            >
+        <TableWashShuffler
+          animating={animatingShuffle}
+          onShufflingAnimationComplete={() => setStatus("idle")}
+          keys={deck.map((card) => card.id)}
+        >
+          {deck.map((card) => (
+            <CardSlot key={card.id}>
               <Card id={card.id} />
-            </CardMovementAnimator>
-          </CardSlot>
-        ))}
+            </CardSlot>
+          ))}
+        </TableWashShuffler>
       </DeckWrapper>
     </Wrapper>
   );
@@ -147,10 +105,6 @@ const Wrapper = styled.div`
 const DeckWrapper = styled.div`
   position: relative;
   width: 127.42px;
-`;
-
-const CardMovementAnimator = styled(motion.div)`
-  transform-origin: top left;
 `;
 
 const CardSlot = styled(motion.div)`
