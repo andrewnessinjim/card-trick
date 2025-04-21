@@ -6,6 +6,7 @@ import Table from "../Table";
 import styled from "styled-components";
 import { CardId } from "../Card";
 import Button from "../Button";
+import Spacer from "../Spacer";
 
 interface Props {
   onReset: () => void;
@@ -30,6 +31,7 @@ function Game({ onReset }: Props) {
         />
         <Button onClick={onReset}>Reset</Button>
       </TopPanelWrapper>
+      <Spacer  size={32} />
       <Table cards={playCards} />
     </Wrapper>
   );

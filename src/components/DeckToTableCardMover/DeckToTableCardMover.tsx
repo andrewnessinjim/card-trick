@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import * as React from "react";
 import styled from "styled-components";
 import Card, { CardId } from "../Card";
+import _ from "lodash";
 
 type CommonProps = {
   cardId: CardId;
@@ -27,6 +28,8 @@ function DeckToTableCardMover(props: Props) {
   if (spot === "table") {
     delay = props.order * 0.1;
     onMoveComplete = props.onMoveComplete;
+  } else {
+    delay = _.random(0, 0.5);
   }
 
   return (
@@ -34,6 +37,7 @@ function DeckToTableCardMover(props: Props) {
       layoutId={cardId}
       transition={{
         delay,
+        duration: spot === "deck" ? 0.5 : undefined,
       }}
       onLayoutAnimationComplete={onMoveComplete}
     >

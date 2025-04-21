@@ -15,14 +15,21 @@ function Resetter() {
   }
   return (
     <Wrapper>
-      {isPending ? (
-        <div>Loading...</div>
-      ) : (
-        <Game key={resetKey} onReset={resetGame} />
-      )}
+      <Game key={resetKey} onReset={resetGame} />
+      {isPending && <LoadingIndicator>Loading...</LoadingIndicator>}
     </Wrapper>
   );
 }
+
+const LoadingIndicator = styled.div`
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: white;
+  display: grid;
+  place-content: center;
+  font-size: 3rem;
+`;
 
 const Wrapper = styled.div``;
 
