@@ -4,7 +4,7 @@ import Card, { CardId } from "../Card";
 import { motion } from "motion/react";
 import DeckToTableCardMover from "../DeckToTableCardMover";
 
-function Table({ cards, started }: { cards?: CardId[]; started: boolean }) {
+function Table({ cards }: { cards?: CardId[] }) {
   const [cardStatuses, setCardStatuses] = React.useState<
     Partial<Record<CardId, "faceDown" | "faceUp">>
   >(Object.fromEntries(cards?.map((cardId) => [cardId, "faceDown"]) ?? []));
@@ -18,15 +18,13 @@ function Table({ cards, started }: { cards?: CardId[]; started: boolean }) {
           order={index}
           spot="table"
           onMoveComplete={() => {
-            if (started) {
-              setCardStatuses((prev) => ({
-                ...prev,
-                [cardId]: "faceUp",
-              }));
-            }
+            setCardStatuses((prev) => ({
+              ...prev,
+              [cardId]: "faceUp",
+            }));
           }}
         >
-          <Card id={cardId} status={cardStatuses[cardId]} />
+          <Card key={cardId} id={cardId} status={cardStatuses[cardId]} />
         </DeckToTableCardMover>
       ))}
     </Wrapper>

@@ -8,16 +8,17 @@ import { CardId } from "../Card";
 
 function Game() {
   const [playCards, setPlayCards] = React.useState<CardId[]>([]);
-  const [started, setStarted] = React.useState(false);
+
   return (
     <Wrapper>
       <Deck
         onCardsDrawn={(drawnCards) => {
-          setPlayCards(drawnCards);
-          setStarted(true);
+          React.startTransition(() => {
+            setPlayCards(drawnCards);
+          });
         }}
       />
-      <Table cards={playCards} started={started} />
+      <Table cards={playCards} />
     </Wrapper>
   );
 }

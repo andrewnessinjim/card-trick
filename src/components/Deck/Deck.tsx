@@ -87,7 +87,9 @@ function Deck({ onCardsDrawn }: Props) {
       <button onClick={() => shuffleDeck()}>Shuffle</button>
       <button
         onClick={() => {
-          setDeck(_.dropRight(deck, 21));
+          React.startTransition(() => {
+            setDeck(_.dropRight(deck, 21));
+          });
           onCardsDrawn(_.takeRight(deck, 21).map((card) => card.id));
         }}
       >
