@@ -16,8 +16,8 @@ const DELAY_PER_CARD = 0.025; // seconds
 const randomDelays = _.shuffle(
   _.range(DELAY_PER_CARD, DELAY_PER_CARD * 53, DELAY_PER_CARD)
 );
-const randomYs = _.times(52, () => _.random(200, 380));
-const randomXs = _.times(52, () => _.random(-225, 225));
+const randomYs = _.times(52, () => _.random(250, 520));
+const randomXs = _.times(52, () => _.random(0, 400));
 const randomRotation = _.sampleSize(_.without(_.range(-60, 60), 0), 52);
 
 function animationSettings(index: number, status: Status): MotionProps {

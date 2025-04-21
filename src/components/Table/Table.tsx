@@ -35,6 +35,8 @@ const Wrapper = styled(motion.div)`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 8px;
+  width: fit-content;
+  margin: 0 auto;
 `;
 
 export default Table;

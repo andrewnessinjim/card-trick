@@ -6,6 +6,7 @@ import { motion } from "motion/react";
 import TableWashShuffler from "./TableWashShuffler";
 import _ from "lodash";
 import DeckToTableCardMover from "../DeckToTableCardMover";
+import Button from "../Button";
 
 interface Card {
   id: CardId;
@@ -15,9 +16,10 @@ type Status = "idle" | "animating-shuffle";
 
 interface Props {
   onCardsDrawn: (cards: CardId[]) => void;
+  showControls: boolean;
 }
 
-function Deck({ onCardsDrawn }: Props) {
+function Deck({ onCardsDrawn, showControls }: Props) {
   const [deck, setDeck] = React.useState<Card[]>([
     { id: "C2" },
     { id: "C3" },
@@ -84,17 +86,6 @@ function Deck({ onCardsDrawn }: Props) {
 
   return (
     <Wrapper>
-      <button onClick={() => shuffleDeck()}>Shuffle</button>
-      <button
-        onClick={() => {
-          React.startTransition(() => {
-            setDeck(_.dropRight(deck, 21));
-          });
-          onCardsDrawn(_.takeRight(deck, 21).map((card) => card.id));
-        }}
-      >
-        Start
-      </button>
       <DeckWrapper>
         <TableWashShuffler
           animating={animatingShuffle}
@@ -110,15 +101,36 @@ function Deck({ onCardsDrawn }: Props) {
           ))}
         </TableWashShuffler>
       </DeckWrapper>
+      {showControls && (
+        <ControlsWrapper>
+          <Button onClick={() => shuffleDeck()}>Shuffle</Button>
+          <Button
+            onClick={() => {
+              React.startTransition(() => {
+                setDeck(_.dropRight(deck, 21));
+              });
+              onCardsDrawn(_.takeRight(deck, 21).map((card) => card.id));
+            }}
+          >
+            Start
+          </Button>
+        </ControlsWrapper>
+      )}
     </Wrapper>
   );
 }
 
 const Wrapper = styled.div`
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 32px;
+`;
+
+const ControlsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 `;
 
 const DeckWrapper = styled.div`

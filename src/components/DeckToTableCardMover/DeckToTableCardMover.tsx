@@ -42,6 +42,7 @@ function DeckToTableCardMover(props: Props) {
   );
 }
 
-const Wrapper = styled(motion.div)``;
+const Wrapper = styled(motion.div)`
+`;
 
 export default DeckToTableCardMover;
