@@ -10,14 +10,7 @@ interface Card {
   id: CardId;
 }
 
-const pileIndexMap: Record<number, number> = {
-  0: -450,
-  1: -150,
-  2: 150,
-  3: 450,
-};
-
-const randomDelays = _.shuffle(_.range(0.05, 0.05 * 52, 0.05));
+const randomDelays = _.shuffle(_.range(0.05, 0.05 * 53, 0.05));
 
 function cardMovementAnimation(
   id: CardId,
@@ -30,8 +23,8 @@ function cardMovementAnimation(
       status === "fanning-out"
         ? {
             rotate: (index - 32) * -2,
-            y: 120,
-            x: pileIndexMap[index % 4],
+            y: _.random(90, 300),
+            x: _.random(-225, 225),
           }
         : {
             rotate: 0,
@@ -43,7 +36,7 @@ function cardMovementAnimation(
       type: "spring",
       duration: 1,
       restDelta: 0.1,
-      delay: status === "fanning-out" ? index * 0.05 : randomDelays[index],
+      delay: randomDelays[index],
     },
   };
 }
@@ -131,17 +124,6 @@ function Deck() {
                   if (cardMovedCount.current === deck.length) {
                     cardMovedCount.current = 0;
                     setStatus("idle");
-                    // setDeck((prev) => {
-                    //   const shuffledDeck = [...prev];
-                    //   for (let i = shuffledDeck.length - 1; i > 0; i--) {
-                    //     const j = Math.floor(Math.random() * (i + 1));
-                    //     [shuffledDeck[i], shuffledDeck[j]] = [
-                    //       shuffledDeck[j],
-                    //       shuffledDeck[i],
-                    //     ];
-                    //   }
-                    //   return shuffledDeck;
-                    // });
                   }
                 }
               }}
