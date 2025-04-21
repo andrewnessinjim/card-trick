@@ -4,13 +4,20 @@ import styled from "styled-components";
 import Card, { CardId } from "../Card";
 import { motion } from "motion/react";
 import TableWashShuffler from "./TableWashShuffler";
+import _ from "lodash";
+import DeckToTableCardMover from "../DeckToTableCardMover";
 
 interface Card {
   id: CardId;
 }
 
 type Status = "idle" | "animating-shuffle";
-function Deck() {
+
+interface Props {
+  onCardsDrawn: (cards: CardId[]) => void;
+}
+
+function Deck({ onCardsDrawn }: Props) {
   const [deck, setDeck] = React.useState<Card[]>([
     { id: "C2" },
     { id: "C3" },
@@ -78,6 +85,14 @@ function Deck() {
   return (
     <Wrapper>
       <button onClick={() => shuffleDeck()}>Shuffle</button>
+      <button
+        onClick={() => {
+          setDeck(_.dropRight(deck, 21));
+          onCardsDrawn(_.takeRight(deck, 21).map((card) => card.id));
+        }}
+      >
+        Start
+      </button>
       <DeckWrapper>
         <TableWashShuffler
           animating={animatingShuffle}
@@ -86,7 +101,9 @@ function Deck() {
         >
           {deck.map((card) => (
             <CardSlot key={card.id}>
-              <Card id={card.id} />
+              <DeckToTableCardMover cardId={card.id} spot="deck">
+                <Card id={card.id} />
+              </DeckToTableCardMover>
             </CardSlot>
           ))}
         </TableWashShuffler>
@@ -105,6 +122,7 @@ const Wrapper = styled.div`
 const DeckWrapper = styled.div`
   position: relative;
   width: 127.42px;
+  height: 180px;
 `;
 
 const CardSlot = styled(motion.div)`

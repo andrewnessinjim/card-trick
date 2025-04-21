@@ -123,20 +123,20 @@ export type CardId = keyof typeof cardIdMap;
 
 interface Props {
   id: CardId;
-  initStatus?: Status;
+  status?: Status;
 }
 
-function Card({ id, initStatus = "faceDown" }: Props) {
-  const [status, setStatus] = React.useState<Status>(initStatus);
+function Card({ id, status = "faceDown" }: Props) {
   const CardElement = cardIdMap[id];
 
   return (
     <Wrapper
-      initial={{ rotateY: status === "faceUp" ? 0 : 180 }}
-      animate={{ rotateY: status === "faceUp" ? 0 : 180 }}
-      transition={{ type: "spring", duration: 1, bounce: 0.4 }}
-      onClick={() => {
-        setStatus((prev) => (prev === "faceUp" ? "faceDown" : "faceUp"));
+      initial="faceDown"
+      animate={status}
+      transition={{ type: "spring", duration: 1.2, bounce: 0 }}
+      variants={{
+        faceUp: { rotateY: 0 },
+        faceDown: { rotateY: 180 },
       }}
     >
       <FrontFace>
