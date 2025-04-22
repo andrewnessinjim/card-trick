@@ -5,7 +5,7 @@ import Card, { CardId } from "../Card";
 import { motion } from "motion/react";
 import TableWashShuffler from "./TableWashShuffler";
 import _ from "lodash";
-import DeckToTableCardMover from "../DeckToTableCardMover";
+import DeckTableCardMover from "../DeckToTableCardMover";
 import Button from "../Button";
 
 interface Card {
@@ -94,9 +94,9 @@ function Deck({ onCardsDrawn, showControls }: Props) {
         >
           {deck.map((card) => (
             <CardSlot key={card.id}>
-              <DeckToTableCardMover cardId={card.id} spot="deck">
+              <DeckTableCardMover cardId={card.id} spot="deck">
                 <Card id={card.id} />
-              </DeckToTableCardMover>
+              </DeckTableCardMover>
             </CardSlot>
           ))}
         </TableWashShuffler>

@@ -2,7 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 import Card, { CardId, FLIP_DURATION_SECS } from "../Card";
 import { motion } from "motion/react";
-import DeckToTableCardMover from "../DeckToTableCardMover";
+import DeckTableCardMover from "../DeckToTableCardMover";
 import useCardStatuses from "./useCardStatuses";
 
 function Table({
@@ -29,7 +29,7 @@ function Table({
   return (
     <Wrapper>
       {cards?.map((cardId, index) => (
-        <DeckToTableCardMover
+        <DeckTableCardMover
           key={cardId}
           cardId={cardId}
           order={index}
@@ -39,7 +39,7 @@ function Table({
           }}
         >
           <Card key={cardId} id={cardId} status={cardStatuses[cardId]} />
-        </DeckToTableCardMover>
+        </DeckTableCardMover>
       ))}
     </Wrapper>
   );

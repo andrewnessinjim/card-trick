@@ -20,7 +20,7 @@ interface TableProps extends CommonProps {
 
 type Props = DeckProps | TableProps;
 
-function DeckToTableCardMover(props: Props) {
+function DeckTableCardMover(props: Props) {
   const { cardId, children, spot } = props;
 
   let delay = 0;
@@ -49,4 +49,4 @@ function DeckToTableCardMover(props: Props) {
 const Wrapper = styled(motion.div)`
 `;
 
-export default DeckToTableCardMover;
+export default DeckTableCardMover;

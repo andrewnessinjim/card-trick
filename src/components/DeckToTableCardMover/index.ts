@@ -1,2 +1,2 @@
-export * from './DeckToTableCardMover';
-export { default } from './DeckToTableCardMover';
+export * from './DeckTableCardMover';
+export { default } from './DeckTableCardMover';
