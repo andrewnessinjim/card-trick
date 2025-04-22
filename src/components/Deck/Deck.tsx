@@ -103,7 +103,12 @@ function Deck({ onCardsDrawn, showControls }: Props) {
       </DeckWrapper>
       {showControls && (
         <ControlsWrapper>
-          <Button onClick={() => shuffleDeck()}>Shuffle</Button>
+          <Button
+            disabled={status === "animating-shuffle"}
+            onClick={() => shuffleDeck()}
+          >
+            Shuffle
+          </Button>
           <Button
             onClick={() => {
               React.startTransition(() => {

@@ -2,6 +2,7 @@ import _ from "lodash";
 import { motion, MotionProps } from "motion/react";
 import React from "react";
 import styled from "styled-components";
+import useCounter from "./useCounter";
 
 interface Props {
   children: React.ReactNode[];
@@ -10,33 +11,61 @@ interface Props {
   keys: string[];
 }
 
-type Status = "spreading" | "stacking" | "idle";
+type Status = "spreading" | "stacking" | "idle" | "washing";
+
+const animatingStatuses: Status[] = ["spreading", "stacking", "washing"];
 
 const DELAY_PER_CARD = 0.025; // seconds
 const randomDelays = _.shuffle(
   _.range(DELAY_PER_CARD, DELAY_PER_CARD * 53, DELAY_PER_CARD)
 );
 
-const randomRotation = _.sampleSize(_.without(_.range(-60, 60), 0), 52);
-
 function animationSettings(index: number, status: Status): MotionProps {
+  const [spreadX, spreadY, spreadRotate] = [
+    _.random(0, 400),
+    _.random(250, 520),
+    _.random(-60, 60),
+  ];
   return {
-    animate:
-      status === "spreading"
-        ? {
-            rotate: randomRotation[index],
-            y: _.random(250, 520),
-            x: _.random(0, 400),
-          }
-        : {
-            rotate: 0,
-            y: 0,
-            x: 0,
-          },
-
+    animate: status,
+    variants: {
+      spreading: {
+        rotate: spreadRotate,
+        y: spreadY,
+        x: spreadX,
+      },
+      washing: {
+        rotate: [
+          null,
+          _.random(-180, 180),
+          _.random(-180, 180),
+          _.random(-60, 60),
+        ],
+        y: [null, _.random(200, 620), _.random(200, 620), _.random(300, 400)],
+        x: [null, _.random(0, 560), _.random(0, 560), _.random(0, 100)],
+        transition: {
+          type: "tween",
+          duration: _.random(1.5, 2.1),
+          ease: "easeInOut",
+          restDelta: 0.1,
+          delay: randomDelays[index],
+        },
+      },
+      stacking: {
+        rotate: 0,
+        y: 0,
+        x: 0,
+      },
+      idle: {
+        rotate: 0,
+        y: 0,
+        x: 0,
+      },
+    },
     transition: {
       type: "spring",
       duration: 1,
+      bounce: 0.15,
       restDelta: 0.1,
       delay: randomDelays[index],
     },
@@ -59,34 +88,38 @@ function TableWashShuffler({
     setStatus("idle");
   }, [animating]);
 
-  const animationCounter = React.useRef(0);
+  const {
+    count: countAnimatedCards,
+    reset: resetAnimatedCardsCount,
+    maxCounted: maxAnimationCardsCountReached,
+  } = useCounter(children.length);
 
+  console.log("status", status);
   return children.map((child, index) => {
     return (
       <Wrapper
         {...animationSettings(index, status)}
         key={keys[index]}
-        onAnimationComplete={(latest: { rotate: number }) => {
-          if (status === "spreading") {
-            if (latest.rotate !== 0) {
-              animationCounter.current += 1;
-            }
+        onAnimationComplete={(latest: Status) => {
+          const statusFlow: Record<Status, Status> = {
+            spreading: "washing",
+            washing: "stacking",
+            stacking: "idle",
+            idle: "idle",
+          };
 
-            if (animationCounter.current === children.length) {
-              setStatus("stacking");
-              animationCounter.current = 0;
-            }
-          }
+          if (animatingStatuses.includes(latest)) {
+            countAnimatedCards();
 
-          if (status === "stacking") {
-            if (latest.rotate === 0) {
-              animationCounter.current += 1;
-            }
+            if (maxAnimationCardsCountReached()) {
+              resetAnimatedCardsCount();
 
-            if (animationCounter.current === children.length) {
-              setStatus("idle");
-              animationCounter.current = 0;
-              onShufflingAnimationComplete();
+              const nextStatus = statusFlow[latest];
+              setStatus(nextStatus);
+
+              if (nextStatus === "idle") {
+                onShufflingAnimationComplete();
+              }
             }
           }
         }}
@@ -97,6 +130,8 @@ function TableWashShuffler({
   });
 }
 
-const Wrapper = styled(motion.div)``;
+const Wrapper = styled(motion.div)`
+  perspective: 1000px;
+`;
 
 export default TableWashShuffler;
