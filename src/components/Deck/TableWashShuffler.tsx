@@ -65,7 +65,6 @@ function animationSettings(index: number, status: Status): MotionProps {
     transition: {
       type: "spring",
       duration: 1,
-      bounce: 0.15,
       restDelta: 0.1,
       delay: randomDelays[index],
     },

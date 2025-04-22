@@ -110,6 +110,7 @@ function Deck({ onCardsDrawn, showControls }: Props) {
             Shuffle
           </Button>
           <Button
+            disabled={status === "animating-shuffle"}
             onClick={() => {
               React.startTransition(() => {
                 setDeck(_.dropRight(deck, 21));
