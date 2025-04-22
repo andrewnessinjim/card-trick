@@ -61,6 +61,7 @@ import SpadesAce from "@/generated/cards/sa";
 import * as React from "react";
 import styled, { css } from "styled-components";
 
+export const FLIP_DURATION_SECS = 1.2; // seconds
 const cardIdMap = {
   C2: Clubs2,
   C3: Clubs3,
@@ -131,7 +132,7 @@ function Card({ id, status = "faceDown" }: Props) {
     <Wrapper
       initial="faceDown"
       animate={status}
-      transition={{ type: "spring", duration: 1.2, bounce: 0 }}
+      transition={{ type: "spring", duration: FLIP_DURATION_SECS, bounce: 0 }}
       variants={{
         faceUp: { rotateY: 0 },
         faceDown: { rotateY: 180 },

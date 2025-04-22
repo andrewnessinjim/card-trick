@@ -1,13 +1,30 @@
 import * as React from "react";
 import styled from "styled-components";
-import Card, { CardId } from "../Card";
+import Card, { CardId, FLIP_DURATION_SECS } from "../Card";
 import { motion } from "motion/react";
 import DeckToTableCardMover from "../DeckToTableCardMover";
+import useCardStatuses from "./useCardStatuses";
 
-function Table({ cards }: { cards?: CardId[] }) {
-  const [cardStatuses, setCardStatuses] = React.useState<
-    Partial<Record<CardId, "faceDown" | "faceUp">>
-  >(Object.fromEntries(cards?.map((cardId) => [cardId, "faceDown"]) ?? []));
+function Table({
+  cards,
+  allFaceDown,
+  onAllFaceDown,
+}: {
+  cards?: CardId[];
+  allFaceDown?: boolean;
+  onAllFaceDown?: () => void;
+}) {
+  const { cardStatuses, setCardStatus, setAllFaceDown } =
+    useCardStatuses(cards);
+
+  React.useEffect(() => {
+    if (allFaceDown) {
+      setAllFaceDown();
+      setTimeout(() => {
+        onAllFaceDown?.();
+      }, FLIP_DURATION_SECS * 1000);
+    }
+  }, [allFaceDown, setAllFaceDown, onAllFaceDown]);
 
   return (
     <Wrapper>
@@ -18,10 +35,7 @@ function Table({ cards }: { cards?: CardId[] }) {
           order={index}
           spot="table"
           onMoveComplete={() => {
-            setCardStatuses((prev) => ({
-              ...prev,
-              [cardId]: "faceUp",
-            }));
+            setCardStatus(cardId, "faceUp");
           }}
         >
           <Card key={cardId} id={cardId} status={cardStatuses[cardId]} />

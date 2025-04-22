@@ -12,10 +12,14 @@ interface Props {
   onReset: () => void;
 }
 
-type Status = "idle" | "playing";
+type Status = "idle" | "playing" | "resetting";
 function Game({ onReset }: Props) {
   const [playCards, setPlayCards] = React.useState<CardId[]>([]);
   const [status, setStatus] = React.useState<Status>("idle");
+
+  const resetGame = React.useCallback(() => {
+    onReset();
+  }, [onReset]);
 
   return (
     <Wrapper>
@@ -29,10 +33,22 @@ function Game({ onReset }: Props) {
             });
           }}
         />
-        <Button onClick={onReset}>Reset</Button>
+        <Button
+          onClick={() => {
+            if (status === "playing") {
+              setStatus("resetting");
+            }
+          }}
+        >
+          Reset
+        </Button>
       </TopPanelWrapper>
-      <Spacer  size={32} />
-      <Table cards={playCards} />
+      <Spacer size={32} />
+      <Table
+        cards={playCards}
+        allFaceDown={status === "resetting"}
+        onAllFaceDown={resetGame}
+      />
     </Wrapper>
   );
 }

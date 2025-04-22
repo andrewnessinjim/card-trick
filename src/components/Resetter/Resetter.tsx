@@ -3,25 +3,39 @@
 import * as React from "react";
 import styled from "styled-components";
 import Game from "../Game";
+import { AnimatePresence, motion } from "motion/react";
 
 function Resetter() {
   const [resetKey, setResetKey] = React.useState(0);
   const [isPending, startTransition] = React.useTransition();
 
-  function resetGame() {
+  const resetGame = React.useCallback(() => {
     startTransition(() => {
       setResetKey((prev) => prev + 1);
     });
-  }
+  }, []);
+
   return (
     <Wrapper>
       <Game key={resetKey} onReset={resetGame} />
-      {isPending && <LoadingIndicator>Loading...</LoadingIndicator>}
+      <AnimatePresence>
+        {isPending && (
+          <LoadingIndicator
+            initial={{
+              opacity: 0,
+            }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            Loading...
+          </LoadingIndicator>
+        )}
+      </AnimatePresence>
     </Wrapper>
   );
 }
 
-const LoadingIndicator = styled.div`
+const LoadingIndicator = styled(motion.div)`
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.75);
