@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import DeckTableCardMover from "../DeckToTableCardMover";
 import useCardStatuses from "./useCardStatuses";
 import _ from "lodash";
+import Jumper from "./Jumper";
 
 interface Props {
   cardsGrid?: CardId[][];
@@ -56,18 +57,10 @@ function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
               rowIndex === cardsGrid.length - 1;
 
             return (
-              <FocusAnimator
+              <Jumper
                 key={cardId}
-                animate={{
-                  y:
-                    focusedRow === rowIndex && tableStatus === "playing"
-                      ? [null, -10, 0]
-                      : 0,
-                  transition: {
-                    duration: 0.4,
-                    delay: 0.015 * cardIndex,
-                  },
-                }}
+                order={cardIndex}
+                jump={tableStatus === "playing" && focusedRow === rowIndex}
               >
                 <DeckTableCardMover
                   cardId={cardId}
@@ -87,7 +80,7 @@ function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
                     }
                   />
                 </DeckTableCardMover>
-              </FocusAnimator>
+              </Jumper>
             );
           })}
         </RowWrapper>
@@ -103,8 +96,6 @@ const Wrapper = styled(motion.div)`
   width: fit-content;
   margin: 0 auto;
 `;
-
-const FocusAnimator = styled(motion.div)``;
 
 const RowWrapper = styled(motion.button)`
   display: flex;
