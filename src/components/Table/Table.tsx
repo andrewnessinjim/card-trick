@@ -10,12 +10,12 @@ function Table({
   cards,
   allFaceDown,
   onAllFaceDown,
-  fakeShuffle,
+  onRowPick,
 }: {
   cards?: CardId[];
   allFaceDown?: boolean;
   onAllFaceDown?: () => void;
-  fakeShuffle: (trackRow: number) => void;
+  onRowPick: (row: number) => void;
 }) {
   const { cardStatuses, setCardStatus, setAllFaceDown } = useCardStatuses(
     _.flatten(cards)
@@ -37,11 +37,11 @@ function Table({
           key={cardId}
           onClick={() => {
             if (index >= 0 && index < 7) {
-              fakeShuffle(0);
+              onRowPick(0);
             } else if (index >= 7 && index < 14) {
-              fakeShuffle(1);
+              onRowPick(1);
             } else if (index >= 14 && index < 21) {
-              fakeShuffle(2);
+              onRowPick(2);
             }
           }}
         >

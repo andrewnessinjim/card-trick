@@ -7,10 +7,11 @@ interface TrackingCard {
   trackCount: number;
 }
 
-export default function useFakeShuffler() {
+export default function useFakeShuffleTracker() {
   const [trackingCardsGrid, setTrackingCardsGrid] = React.useState<
     TrackingCard[][]
   >([]);
+  // const [trackedCard, setTrackedCard] = React.useState<CardId | null>(null);
 
   const cards: CardId[] = _.flatten(
     trackingCardsGrid.map((row) => row.map((card) => card.id))
@@ -39,25 +40,12 @@ export default function useFakeShuffler() {
     distributeTrackedCards();
     scatterUntrackedCards();
     scatterUntrackedOfTrackedRow();
-    React.startTransition(() => {
-      setTrackingCardsGrid(nextTrackingCardsGrid);
-    });
 
-    console.log(
-      "maxTrackedCard",
-      _.maxBy(_.flatten(nextTrackingCardsGrid), "trackCount")
-    );
+    setTrackingCardsGrid(nextTrackingCardsGrid);
+
     console.log(nextTrackingCardsGrid);
 
     function distributeTrackedCards() {
-      function findTracked() {
-        const maxTrackCount = _.maxBy(trackedRow, "trackCount")?.trackCount;
-        return _.filter(
-          trackedRow,
-          (card) => card.trackCount === maxTrackCount
-        );
-      }
-
       const trackedCards = findTracked();
       let currentRow = 0;
       for (let col = 0; col < trackedCards.length; col++) {
@@ -73,6 +61,14 @@ export default function useFakeShuffler() {
         );
 
         currentRow = (currentRow + 1) % 3;
+      }
+
+      function findTracked() {
+        const maxTrackCount = _.maxBy(trackedRow, "trackCount")?.trackCount;
+        return _.filter(
+          trackedRow,
+          (card) => card.trackCount === maxTrackCount
+        );
       }
     }
 
@@ -104,10 +100,14 @@ export default function useFakeShuffler() {
     }
   }
 
+  const trackedCard = _.maxBy(_.flatten(trackingCardsGrid), "trackCount")?.id;
+  // console.log("trackedCard", trackedCard);
+
   return {
     cards,
     setCards,
     fakeShuffle,
+    trackedCard,
   };
 }
 

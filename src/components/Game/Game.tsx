@@ -6,24 +6,33 @@ import Table from "../Table";
 import styled from "styled-components";
 import Button from "../Button";
 import Spacer from "../Spacer";
-import useFakeShuffler from "./useFakeShuffler";
+import useFakeShuffleTracker from "./useFakeShuffleTracker";
+import useTableCards from "./useTableCards";
 
 interface Props {
   onReset: () => void;
 }
 
-type GameStatus = "idle" | "playing" | "resetting" | "completed";
+export type GameStatus = "idle" | "playing" | "resetting" | "completed";
 function Game({ onReset }: Props) {
   const {
-    cards: tableCards,
-    setCards: setTableCards,
+    cards: fakeShuffleCards,
+    setCards: setFakeShuffleCards,
     fakeShuffle,
-  } = useFakeShuffler();
+    trackedCard,
+  } = useFakeShuffleTracker();
   const [gameStatus, setGameStatus] = React.useState<GameStatus>("idle");
+  const [numRowsPicked, setNumRowsPicked] = React.useState(0);
+
+  const tableCards = useTableCards(gameStatus, fakeShuffleCards);
 
   const resetGame = React.useCallback(() => {
     onReset();
   }, [onReset]);
+
+  if (gameStatus === "completed") {
+    console.log("The card you picked is", trackedCard);
+  }
 
   return (
     <Wrapper>
@@ -32,12 +41,12 @@ function Game({ onReset }: Props) {
           showControls={gameStatus === "idle"}
           onCardsDrawn={(drawnCards) => {
             setGameStatus("playing");
-            setTableCards(drawnCards);
+            setFakeShuffleCards(drawnCards);
           }}
         />
         <Button
           onClick={() => {
-            if (gameStatus === "playing") {
+            if (gameStatus === "playing" || gameStatus === "completed") {
               setGameStatus("resetting");
             }
           }}
@@ -50,7 +59,17 @@ function Game({ onReset }: Props) {
         cards={tableCards}
         allFaceDown={gameStatus === "resetting"}
         onAllFaceDown={resetGame}
-        fakeShuffle={fakeShuffle}
+        onRowPick={(row) => {
+          if (gameStatus === "playing") {
+            const nextNumRowsPicked = numRowsPicked + 1;
+            setNumRowsPicked(nextNumRowsPicked);
+            fakeShuffle(row);
+
+            if (nextNumRowsPicked === 3) {
+              setGameStatus("completed");
+            }
+          }
+        }}
       />
     </Wrapper>
   );
