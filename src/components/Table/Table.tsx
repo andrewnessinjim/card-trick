@@ -14,7 +14,7 @@ interface Props {
   onRowPick: (row: number) => void;
 }
 
-type TableStatus = "idle" | "animating-shuffle" | "playing";
+type TableStatus = "idle" | "animating-shuffle" | "picking";
 function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
   const { cardStatuses, setCardStatus, setAllFaceDown } = useCardStatuses(
     _.flatten(cardsGrid)
@@ -32,7 +32,7 @@ function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
   }, [allFaceDown, setAllFaceDown, onAllFaceDown]);
 
   function getRowOpacity(rowIndex: number) {
-    if (focusedRow === null || tableStatus !== "playing") return 1;
+    if (focusedRow === null || tableStatus !== "picking") return 1;
     if (focusedRow === rowIndex) return 1;
     return 0.75;
   }
@@ -45,7 +45,12 @@ function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
             opacity: getRowOpacity(rowIndex),
           }}
           key={rowIndex}
-          onClick={() => onRowPick(rowIndex)}
+          onClick={() => {
+            if (tableStatus !== "picking") return;
+
+            setFocusedRow(null);
+            onRowPick(rowIndex);
+          }}
           onMouseEnter={() => setFocusedRow(rowIndex)}
           onMouseLeave={() => setFocusedRow(null)}
           onFocus={() => setFocusedRow(rowIndex)}
@@ -60,7 +65,7 @@ function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
               <Jumper
                 key={cardId}
                 order={cardIndex}
-                jump={tableStatus === "playing" && focusedRow === rowIndex}
+                jump={tableStatus === "picking" && focusedRow === rowIndex}
               >
                 <DeckTableCardMover
                   cardId={cardId}
@@ -76,7 +81,9 @@ function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
                     id={cardId}
                     status={cardStatuses[cardId]}
                     afterFlip={
-                      isLastCard ? () => setTableStatus("playing") : undefined
+                      isLastCard && tableStatus === "idle"
+                        ? () => setTableStatus("picking")
+                        : undefined
                     }
                   />
                 </DeckTableCardMover>
