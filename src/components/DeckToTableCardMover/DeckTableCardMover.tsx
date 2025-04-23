@@ -47,6 +47,7 @@ function DeckTableCardMover(props: Props) {
 }
 
 const Wrapper = styled(motion.div)`
+  will-change: transform;
 `;
 
 export default DeckTableCardMover;
