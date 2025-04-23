@@ -93,7 +93,6 @@ function TableWashShuffler({
     maxCounted: maxAnimationCardsCountReached,
   } = useCounter(children.length);
 
-  console.log("status", status);
   return children.map((child, index) => {
     return (
       <Wrapper
