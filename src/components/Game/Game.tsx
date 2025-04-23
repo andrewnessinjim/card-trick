@@ -16,7 +16,7 @@ interface Props {
 export type GameStatus = "idle" | "playing" | "resetting" | "completed";
 function Game({ onReset }: Props) {
   const {
-    cards: fakeShuffleCards,
+    cardsGrid: fakeShuffleCardsGrid,
     setCards: setFakeShuffleCards,
     fakeShuffle,
     trackedCard,
@@ -24,7 +24,9 @@ function Game({ onReset }: Props) {
   const [gameStatus, setGameStatus] = React.useState<GameStatus>("idle");
   const [numRowsPicked, setNumRowsPicked] = React.useState(0);
 
-  const tableCards = useTableCards(gameStatus, fakeShuffleCards);
+  const tableCardsGrid = useTableCards(gameStatus, fakeShuffleCardsGrid);
+
+  console.log("tableCardsGrid", tableCardsGrid);
 
   const resetGame = React.useCallback(() => {
     onReset();
@@ -56,10 +58,11 @@ function Game({ onReset }: Props) {
       </TopPanelWrapper>
       <Spacer size={32} />
       <Table
-        cards={tableCards}
+        cardsGrid={tableCardsGrid}
         allFaceDown={gameStatus === "resetting"}
         onAllFaceDown={resetGame}
         onRowPick={(row) => {
+          console.log("row", row);
           if (gameStatus === "playing") {
             const nextNumRowsPicked = numRowsPicked + 1;
             setNumRowsPicked(nextNumRowsPicked);

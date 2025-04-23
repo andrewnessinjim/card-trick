@@ -11,10 +11,9 @@ export default function useFakeShuffleTracker() {
   const [trackingCardsGrid, setTrackingCardsGrid] = React.useState<
     TrackingCard[][]
   >([]);
-  // const [trackedCard, setTrackedCard] = React.useState<CardId | null>(null);
 
-  const cards: CardId[] = _.flatten(
-    trackingCardsGrid.map((row) => row.map((card) => card.id))
+  const cardsGrid: CardId[][] = trackingCardsGrid.map((row) =>
+    row.map((card) => card.id)
   );
 
   function setCards(cards: CardId[]) {
@@ -43,7 +42,7 @@ export default function useFakeShuffleTracker() {
 
     setTrackingCardsGrid(nextTrackingCardsGrid);
 
-    console.log(nextTrackingCardsGrid);
+    // console.log(nextTrackingCardsGrid);
 
     function distributeTrackedCards() {
       const trackedCards = findTracked();
@@ -104,7 +103,7 @@ export default function useFakeShuffleTracker() {
   // console.log("trackedCard", trackedCard);
 
   return {
-    cards,
+    cardsGrid,
     setCards,
     fakeShuffle,
     trackedCard,

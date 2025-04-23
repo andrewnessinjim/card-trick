@@ -4,9 +4,9 @@ import { CardId } from "../Card";
 
 export default function useTableCards(
   gameStatus: GameStatus,
-  fakeShuffleCards: CardId[]
+  fakeShuffleCards: CardId[][]
 ) {
-  const previousTableCards = React.useRef<CardId[]>([]);
+  const previousTableCards = React.useRef<CardId[][]>([]);
 
   if (gameStatus === "playing") {
     previousTableCards.current = fakeShuffleCards;

@@ -123,9 +123,10 @@ export type CardId = keyof typeof cardIdMap;
 interface Props {
   id: CardId;
   status?: Status;
+  afterFlip?: () => void;
 }
 
-function Card({ id, status = "faceDown" }: Props) {
+function Card({ id, status = "faceDown", afterFlip }: Props) {
   const CardElement = cardIdMap[id];
 
   return (
@@ -136,6 +137,9 @@ function Card({ id, status = "faceDown" }: Props) {
       variants={{
         faceUp: { rotateY: 0 },
         faceDown: { rotateY: 180 },
+      }}
+      onAnimationComplete={() => {
+        afterFlip?.();
       }}
     >
       <FrontFace>

@@ -6,20 +6,20 @@ import DeckTableCardMover from "../DeckToTableCardMover";
 import useCardStatuses from "./useCardStatuses";
 import _ from "lodash";
 
-function Table({
-  cards,
-  allFaceDown,
-  onAllFaceDown,
-  onRowPick,
-}: {
-  cards?: CardId[];
+interface Props {
+  cardsGrid?: CardId[][];
   allFaceDown?: boolean;
   onAllFaceDown?: () => void;
   onRowPick: (row: number) => void;
-}) {
+}
+
+type TableStatus = "idle" | "animating-shuffle" | "playing";
+function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
   const { cardStatuses, setCardStatus, setAllFaceDown } = useCardStatuses(
-    _.flatten(cards)
+    _.flatten(cardsGrid)
   );
+  const [focusedRow, setFocusedRow] = React.useState<number | null>(null);
+  const [tableStatus, setTableStatus] = React.useState<TableStatus>("idle");
 
   React.useEffect(() => {
     if (allFaceDown) {
@@ -30,45 +30,87 @@ function Table({
     }
   }, [allFaceDown, setAllFaceDown, onAllFaceDown]);
 
+  function getRowOpacity(rowIndex: number) {
+    if (focusedRow === null || tableStatus !== "playing") return 1;
+    if (focusedRow === rowIndex) return 1;
+    return 0.75;
+  }
+
   return (
     <Wrapper>
-      {cards?.map((cardId, index) => (
-        <ClickDetector
-          key={cardId}
-          onClick={() => {
-            if (index >= 0 && index < 7) {
-              onRowPick(0);
-            } else if (index >= 7 && index < 14) {
-              onRowPick(1);
-            } else if (index >= 14 && index < 21) {
-              onRowPick(2);
-            }
+      {cardsGrid?.map((cardsRow, rowIndex) => (
+        <RowWrapper
+          animate={{
+            opacity: getRowOpacity(rowIndex),
           }}
+          key={rowIndex}
+          onClick={() => onRowPick(rowIndex)}
+          onMouseEnter={() => setFocusedRow(rowIndex)}
+          onMouseLeave={() => setFocusedRow(null)}
+          onFocus={() => setFocusedRow(rowIndex)}
+          onBlur={() => setFocusedRow(null)}
         >
-          <DeckTableCardMover
-            cardId={cardId}
-            order={index}
-            spot="table"
-            onMoveComplete={() => {
-              setCardStatus(cardId, "faceUp");
-            }}
-          >
-            <Card key={cardId} id={cardId} status={cardStatuses[cardId]} />
-          </DeckTableCardMover>
-        </ClickDetector>
+          {cardsRow.map((cardId, cardIndex) => {
+            const isLastCard =
+              cardIndex === cardsRow.length - 1 &&
+              rowIndex === cardsGrid.length - 1;
+
+            return (
+              <FocusAnimator
+                key={cardId}
+                animate={{
+                  y:
+                    focusedRow === rowIndex && tableStatus === "playing"
+                      ? [null, -10, 0]
+                      : 0,
+                  transition: {
+                    duration: 0.4,
+                    delay: 0.015 * cardIndex,
+                  },
+                }}
+              >
+                <DeckTableCardMover
+                  cardId={cardId}
+                  order={rowIndex * cardsRow.length + cardIndex}
+                  spot="table"
+                  onMoveComplete={() => {
+                    if (tableStatus === "idle") {
+                      setCardStatus(cardId, "faceUp");
+                    }
+                  }}
+                >
+                  <Card
+                    id={cardId}
+                    status={cardStatuses[cardId]}
+                    afterFlip={
+                      isLastCard ? () => setTableStatus("playing") : undefined
+                    }
+                  />
+                </DeckTableCardMover>
+              </FocusAnimator>
+            );
+          })}
+        </RowWrapper>
       ))}
     </Wrapper>
   );
 }
 
 const Wrapper = styled(motion.div)`
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   width: fit-content;
   margin: 0 auto;
 `;
 
-const ClickDetector = styled.div``;
+const FocusAnimator = styled(motion.div)``;
+
+const RowWrapper = styled(motion.button)`
+  display: flex;
+  gap: 16px;
+  background-color: transparent;
+  border: none;
+`;
 
 export default Table;
