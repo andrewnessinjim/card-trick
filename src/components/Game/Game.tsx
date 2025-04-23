@@ -4,18 +4,22 @@ import * as React from "react";
 import Deck from "../Deck";
 import Table from "../Table";
 import styled from "styled-components";
-import { CardId } from "../Card";
 import Button from "../Button";
 import Spacer from "../Spacer";
+import useFakeShuffler from "./useFakeShuffler";
 
 interface Props {
   onReset: () => void;
 }
 
-type Status = "idle" | "playing" | "resetting";
+type GameStatus = "idle" | "playing" | "resetting" | "completed";
 function Game({ onReset }: Props) {
-  const [playCards, setPlayCards] = React.useState<CardId[]>([]);
-  const [status, setStatus] = React.useState<Status>("idle");
+  const {
+    cards: tableCards,
+    setCards: setTableCards,
+    fakeShuffle,
+  } = useFakeShuffler();
+  const [gameStatus, setGameStatus] = React.useState<GameStatus>("idle");
 
   const resetGame = React.useCallback(() => {
     onReset();
@@ -25,18 +29,16 @@ function Game({ onReset }: Props) {
     <Wrapper>
       <TopPanelWrapper>
         <Deck
-          showControls={status === "idle"}
+          showControls={gameStatus === "idle"}
           onCardsDrawn={(drawnCards) => {
-            setStatus("playing");
-            React.startTransition(() => {
-              setPlayCards(drawnCards);
-            });
+            setGameStatus("playing");
+            setTableCards(drawnCards);
           }}
         />
         <Button
           onClick={() => {
-            if (status === "playing") {
-              setStatus("resetting");
+            if (gameStatus === "playing") {
+              setGameStatus("resetting");
             }
           }}
         >
@@ -45,9 +47,10 @@ function Game({ onReset }: Props) {
       </TopPanelWrapper>
       <Spacer size={32} />
       <Table
-        cards={playCards}
-        allFaceDown={status === "resetting"}
+        cards={tableCards}
+        allFaceDown={gameStatus === "resetting"}
         onAllFaceDown={resetGame}
+        fakeShuffle={fakeShuffle}
       />
     </Wrapper>
   );

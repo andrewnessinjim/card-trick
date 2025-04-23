@@ -4,18 +4,22 @@ import Card, { CardId, FLIP_DURATION_SECS } from "../Card";
 import { motion } from "motion/react";
 import DeckTableCardMover from "../DeckToTableCardMover";
 import useCardStatuses from "./useCardStatuses";
+import _ from "lodash";
 
 function Table({
   cards,
   allFaceDown,
   onAllFaceDown,
+  fakeShuffle,
 }: {
   cards?: CardId[];
   allFaceDown?: boolean;
   onAllFaceDown?: () => void;
+  fakeShuffle: (trackRow: number) => void;
 }) {
-  const { cardStatuses, setCardStatus, setAllFaceDown } =
-    useCardStatuses(cards);
+  const { cardStatuses, setCardStatus, setAllFaceDown } = useCardStatuses(
+    _.flatten(cards)
+  );
 
   React.useEffect(() => {
     if (allFaceDown) {
@@ -29,17 +33,29 @@ function Table({
   return (
     <Wrapper>
       {cards?.map((cardId, index) => (
-        <DeckTableCardMover
+        <ClickDetector
           key={cardId}
-          cardId={cardId}
-          order={index}
-          spot="table"
-          onMoveComplete={() => {
-            setCardStatus(cardId, "faceUp");
+          onClick={() => {
+            if (index >= 0 && index < 7) {
+              fakeShuffle(0);
+            } else if (index >= 7 && index < 14) {
+              fakeShuffle(1);
+            } else if (index >= 14 && index < 21) {
+              fakeShuffle(2);
+            }
           }}
         >
-          <Card key={cardId} id={cardId} status={cardStatuses[cardId]} />
-        </DeckTableCardMover>
+          <DeckTableCardMover
+            cardId={cardId}
+            order={index}
+            spot="table"
+            onMoveComplete={() => {
+              setCardStatus(cardId, "faceUp");
+            }}
+          >
+            <Card key={cardId} id={cardId} status={cardStatuses[cardId]} />
+          </DeckTableCardMover>
+        </ClickDetector>
       ))}
     </Wrapper>
   );
@@ -52,5 +68,7 @@ const Wrapper = styled(motion.div)`
   width: fit-content;
   margin: 0 auto;
 `;
+
+const ClickDetector = styled.div``;
 
 export default Table;
