@@ -28,15 +28,11 @@ function Game({ onReset }: Props) {
 
   const tableCardsGrid = useTableCards(gameStatus, fakeShuffleCardsGrid);
 
-  console.log("tableCardsGrid", tableCardsGrid);
+  // console.log("tableCardsGrid", tableCardsGrid);
 
   const resetGame = React.useCallback(() => {
     onReset();
   }, [onReset]);
-
-  if (gameStatus === "completed") {
-    console.log("The card you picked is", trackedCard);
-  }
 
   return (
     <Wrapper>

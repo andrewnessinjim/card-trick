@@ -26,9 +26,7 @@ export default function useFakeShuffleTracker() {
       trackCount: 0,
     }));
 
-    React.startTransition(() => {
-      setTrackingCardsGrid(_.chunk(playCards, 7));
-    });
+    setTrackingCardsGrid(_.chunk(playCards, 7));
   }
 
   function fakeShuffle(trackRowIndex: number) {

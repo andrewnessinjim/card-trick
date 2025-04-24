@@ -127,16 +127,27 @@ interface Props {
   height?: number;
 }
 
-function Card({ id, status = "faceDown", afterFlip, height = 180 }: Props) {
+const RawCard = React.memo(function RawCard({
+  id,
+  height,
+}: {
+  id: CardId;
+  height: number;
+}) {
   const CardElement = cardIdMap[id];
+  return <CardElement height={height} />;
+});
 
+function Card({ id, status = "faceDown", afterFlip, height = 180 }: Props) {
   return (
     <Wrapper
-      style={{
-        "--height": `${height}px`,
-        "--width": height === 180 ? "127.42px" : undefined,
-      }}
-      initial="faceDown"
+      style={
+        {
+          "--height": `${height}px`,
+          "--width": height === 180 ? "127.42px" : undefined,
+        } as React.CSSProperties
+      }
+      initial={status}
       animate={status}
       transition={{ type: "spring", duration: FLIP_DURATION_SECS, bounce: 0 }}
       variants={{
@@ -148,7 +159,7 @@ function Card({ id, status = "faceDown", afterFlip, height = 180 }: Props) {
       }}
     >
       <FrontFace>
-        <CardElement height={height} />
+        <RawCard id={id} height={height} />
       </FrontFace>
       <BackFace>
         <CardBack height={height} />
@@ -162,7 +173,7 @@ const Wrapper = styled(motion.div)`
   position: relative;
   transform-style: preserve-3d;
   height: var(--height, 180px);
-  width: var(--width, 127.42px);
+  width: var(--width, "auto");
 `;
 
 const Face = css`

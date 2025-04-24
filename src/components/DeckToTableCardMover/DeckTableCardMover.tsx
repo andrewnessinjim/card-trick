@@ -28,7 +28,6 @@ function DeckTableCardMover(props: Props) {
   if (spot === "table") {
     delay = props.order * 0.1;
     onMoveComplete = props.onMoveComplete;
-    // console.log("order", props.order, "card", cardId);
   } else {
     delay = _.random(0, 0.5);
   }

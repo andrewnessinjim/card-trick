@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 import Card, { CardId, FLIP_DURATION_SECS } from "../Card";
-import { motion } from "motion/react";
+import { LayoutGroup, motion } from "motion/react";
 import DeckTableCardMover from "../DeckToTableCardMover";
 import useCardStatuses from "./useCardStatuses";
 import _ from "lodash";
@@ -37,61 +37,63 @@ function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
     return 0.75;
   }
 
+  const startPickingIfIdle = React.useCallback(() => {
+    if (tableStatus === "idle") {
+      setTableStatus("picking");
+    }
+  }, [tableStatus]);
+
   return (
     <Wrapper>
-      {cardsGrid?.map((cardsRow, rowIndex) => (
-        <RowWrapper
-          animate={{
-            opacity: getRowOpacity(rowIndex),
-          }}
-          key={rowIndex}
-          onClick={() => {
-            if (tableStatus !== "picking") return;
-
-            setFocusedRow(null);
-            onRowPick(rowIndex);
-          }}
-          onMouseEnter={() => setFocusedRow(rowIndex)}
-          onMouseLeave={() => setFocusedRow(null)}
-          onFocus={() => setFocusedRow(rowIndex)}
-          onBlur={() => setFocusedRow(null)}
-        >
-          {cardsRow.map((cardId, cardIndex) => {
-            const isLastCard =
-              cardIndex === cardsRow.length - 1 &&
-              rowIndex === cardsGrid.length - 1;
-
-            return (
-              <Jumper
-                key={cardId}
-                order={cardIndex}
-                jump={tableStatus === "picking" && focusedRow === rowIndex}
-              >
-                <DeckTableCardMover
-                  cardId={cardId}
-                  order={rowIndex * cardsRow.length + cardIndex}
-                  spot="table"
-                  onMoveComplete={() => {
-                    if (tableStatus === "idle") {
-                      setCardStatus(cardId, "faceUp");
-                    }
-                  }}
+      <LayoutGroup>
+        {cardsGrid?.map((cardsRow, rowIndex) => (
+          <RowWrapper
+            animate={{
+              opacity: getRowOpacity(rowIndex),
+            }}
+            key={rowIndex}
+            onClick={() => {
+              if (tableStatus !== "picking") return;
+              setFocusedRow(null);
+              onRowPick(rowIndex);
+            }}
+            onMouseEnter={() => setFocusedRow(rowIndex)}
+            onMouseLeave={() => setFocusedRow(null)}
+            onFocus={() => setFocusedRow(rowIndex)}
+            onBlur={() => setFocusedRow(null)}
+          >
+            {cardsRow.map((cardId, colIndex) => {
+              const isLastCard =
+                rowIndex === cardsGrid.length - 1 &&
+                colIndex === cardsRow.length - 1;
+              return (
+                <Jumper
+                  key={cardId}
+                  order={colIndex}
+                  jump={tableStatus === "picking" && focusedRow === rowIndex}
                 >
-                  <Card
-                    id={cardId}
-                    status={cardStatuses[cardId]}
-                    afterFlip={
-                      isLastCard && tableStatus === "idle"
-                        ? () => setTableStatus("picking")
-                        : undefined
-                    }
-                  />
-                </DeckTableCardMover>
-              </Jumper>
-            );
-          })}
-        </RowWrapper>
-      ))}
+                  <DeckTableCardMover
+                    cardId={cardId}
+                    order={rowIndex * cardsRow.length + colIndex}
+                    spot="table"
+                    onMoveComplete={() => {
+                      if (tableStatus === "idle") {
+                        setCardStatus(cardId, "faceUp");
+                      }
+                    }}
+                  >
+                    <Card
+                      id={cardId}
+                      status={cardStatuses[cardId]}
+                      afterFlip={isLastCard ? startPickingIfIdle : undefined}
+                    />
+                  </DeckTableCardMover>
+                </Jumper>
+              );
+            })}
+          </RowWrapper>
+        ))}
+      </LayoutGroup>
     </Wrapper>
   );
 }
