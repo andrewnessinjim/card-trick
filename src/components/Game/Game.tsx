@@ -28,8 +28,6 @@ function Game({ onReset }: Props) {
 
   const tableCardsGrid = useTableCards(gameStatus, fakeShuffleCardsGrid);
 
-  // console.log("tableCardsGrid", tableCardsGrid);
-
   const resetGame = React.useCallback(() => {
     onReset();
   }, [onReset]);
@@ -60,7 +58,6 @@ function Game({ onReset }: Props) {
         allFaceDown={gameStatus === "resetting"}
         onAllFaceDown={resetGame}
         onRowPick={(row) => {
-          console.log("row", row);
           if (gameStatus === "playing") {
             const nextNumRowsPicked = numRowsPicked + 1;
             setNumRowsPicked(nextNumRowsPicked);
