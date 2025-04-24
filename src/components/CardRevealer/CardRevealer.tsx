@@ -8,38 +8,50 @@ interface Props {
   cardId: CardId;
   onReset: () => void;
 }
+const scaleBlurAnimation = {
+  initial: { scale: 0, filter: "blur(25px)" },
+  animate: { scale: 1, filter: "blur(0px)" },
+  transition: {
+    type: "spring",
+    bounce: 0.25,
+    delay: 1,
+    duration: 3,
+  },
+};
+
+const opacityAnimation = {
+  initial: {
+    opacity: 0,
+  },
+  exit: {
+    opacity: 0,
+  },
+  animate: {
+    opacity: 1,
+  },
+  transition: {
+    duration: 1,
+    ease: "easeInOut",
+  },
+};
 
 function CardRevealer({ cardId, onReset }: Props) {
+  const [showResetButton, setShowResetButton] = React.useState(false);
   return (
-    <Wrapper
-      initial={{
-        opacity: 0,
-      }}
-      exit={{
-        opacity: 0,
-      }}
-      animate={{
-        opacity: 1,
-      }}
-      transition={{
-        duration: 1,
-        ease: "easeInOut",
-      }}
-    >
-      <Heading>The Card you picked was</Heading>
-      <CardWrapper
-        initial={{ scale: 0, filter: "blur(25px)" }}
-        animate={{ scale: 1, filter: "blur(0px)" }}
-        transition={{
-          type: "spring",
-          bounce: 0.25,
-          delay: 1,
-          duration: 3,
-        }}
+    <Wrapper {...opacityAnimation}>
+      <Heading initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        The Card you picked was
+      </Heading>
+
+      <CardAnimationWrapper
+        {...scaleBlurAnimation}
+        onAnimationComplete={() => setShowResetButton(true)}
       >
         <Card id={cardId} status="faceUp" height={380} />
-      </CardWrapper>
-      <Button onClick={onReset}>Reset</Button>
+      </CardAnimationWrapper>
+      <ButtonVisibilityWrapper animate={{ opacity: showResetButton ? 1 : 0 }}>
+        <Button onClick={onReset}>Reset</Button>
+      </ButtonVisibilityWrapper>
     </Wrapper>
   );
 }
@@ -57,10 +69,12 @@ const Wrapper = styled(motion.div)`
   gap: 32px;
 `;
 
-const Heading = styled.h1`
+const Heading = styled(motion.h1)`
   color: white;
 `;
 
-const CardWrapper = styled(motion.div)``;
+const CardAnimationWrapper = styled(motion.div)``;
+
+const ButtonVisibilityWrapper = styled(motion.div)``;
 
 export default CardRevealer;
