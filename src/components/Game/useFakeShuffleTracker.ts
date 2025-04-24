@@ -30,7 +30,6 @@ export default function useFakeShuffleTracker() {
   }
 
   function fakeShuffle(trackRowIndex: number) {
-    console.log("fakeShuffle row", trackRowIndex);
     const nextTrackingCardsGrid = createEmptyGrid(3, 7);
     const trackedRow = trackingCardsGrid[trackRowIndex];
 
@@ -39,8 +38,6 @@ export default function useFakeShuffleTracker() {
     scatterUntrackedOfTrackedRow();
 
     setTrackingCardsGrid(nextTrackingCardsGrid);
-
-    // console.log(nextTrackingCardsGrid);
 
     function distributeTrackedCards() {
       const trackedCards = findTracked();
@@ -98,8 +95,6 @@ export default function useFakeShuffleTracker() {
   }
 
   const trackedCard = _.maxBy(_.flatten(trackingCardsGrid), "trackCount")?.id;
-  // console.log("trackedCard", trackedCard);
-
   return {
     cardsGrid,
     setCards,
