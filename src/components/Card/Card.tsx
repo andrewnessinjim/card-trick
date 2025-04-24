@@ -124,13 +124,18 @@ interface Props {
   id: CardId;
   status?: Status;
   afterFlip?: () => void;
+  height?: number;
 }
 
-function Card({ id, status = "faceDown", afterFlip }: Props) {
+function Card({ id, status = "faceDown", afterFlip, height = 180 }: Props) {
   const CardElement = cardIdMap[id];
 
   return (
     <Wrapper
+      style={{
+        "--height": `${height}px`,
+        "--width": height === 180 ? "127.42px" : undefined,
+      }}
       initial="faceDown"
       animate={status}
       transition={{ type: "spring", duration: FLIP_DURATION_SECS, bounce: 0 }}
@@ -143,10 +148,10 @@ function Card({ id, status = "faceDown", afterFlip }: Props) {
       }}
     >
       <FrontFace>
-        <CardElement height={180} />
+        <CardElement height={height} />
       </FrontFace>
       <BackFace>
-        <CardBack height={180} />
+        <CardBack height={height} />
       </BackFace>
     </Wrapper>
   );
@@ -156,8 +161,8 @@ const Wrapper = styled(motion.div)`
   width: fit-content;
   position: relative;
   transform-style: preserve-3d;
-  height: 180px;
-  width: 127.42px;
+  height: var(--height, 180px);
+  width: var(--width, 127.42px);
 `;
 
 const Face = css`
