@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "prebuild": "npm run build:cards",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
