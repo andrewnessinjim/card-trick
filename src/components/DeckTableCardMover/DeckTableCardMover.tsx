@@ -15,6 +15,7 @@ interface DeckProps extends CommonProps {
 interface TableProps extends CommonProps {
   spot: "table";
   order: number;
+  staggerDelay?: number;
   onMoveComplete?: () => void;
 }
 
@@ -26,7 +27,8 @@ function DeckTableCardMover(props: Props) {
   let delay = 0;
   let onMoveComplete;
   if (spot === "table") {
-    delay = props.order * 0.1;
+    const { order, staggerDelay = 0.1 } = props;
+    delay = order * staggerDelay;
     onMoveComplete = props.onMoveComplete;
   } else {
     delay = _.random(0, 0.5);

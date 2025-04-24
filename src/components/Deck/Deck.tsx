@@ -5,7 +5,7 @@ import Card, { CardId } from "../Card";
 import { motion } from "motion/react";
 import TableWashShuffler from "./TableWashShuffler";
 import _ from "lodash";
-import DeckTableCardMover from "../DeckToTableCardMover";
+import DeckTableCardMover from "../DeckTableCardMover";
 import Button from "../Button";
 
 interface Card {

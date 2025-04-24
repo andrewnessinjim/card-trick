@@ -2,7 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 import Card, { CardId, FLIP_DURATION_SECS } from "../Card";
 import { LayoutGroup, motion } from "motion/react";
-import DeckTableCardMover from "../DeckToTableCardMover";
+import DeckTableCardMover from "../DeckTableCardMover";
 import useCardStatuses from "./useCardStatuses";
 import _ from "lodash";
 import Jumper from "./Jumper";
@@ -75,6 +75,7 @@ function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
                   <DeckTableCardMover
                     cardId={cardId}
                     order={rowIndex * cardsRow.length + colIndex}
+                    staggerDelay={tableStatus === "picking" ? 0.05 : undefined}
                     spot="table"
                     onMoveComplete={() => {
                       if (tableStatus === "idle") {
