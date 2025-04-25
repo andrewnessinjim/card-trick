@@ -1,21 +1,28 @@
 import * as React from "react";
 import Card, { CardId } from "../Card/Card";
 import styled from "styled-components";
-import { motion } from "motion/react";
+import { motion, MotionProps } from "motion/react";
 import Button from "../Button";
 
 interface Props {
   cardId: CardId;
   onReset: () => void;
 }
-const scaleBlurAnimation = {
+const scaleBlurRevealAnimation: MotionProps = {
   initial: { scale: 0, filter: "blur(25px)" },
   animate: { scale: 1, filter: "blur(0px)" },
   transition: {
-    type: "spring",
-    bounce: 0.25,
-    delay: 1,
-    duration: 3,
+    scale: {
+      type: "spring",
+      bounce: 0.25,
+      delay: 1,
+      duration: 3,
+    },
+    filter: {
+      type: "tween",
+      duration: 3,
+      ease: "easeIn",
+    },
   },
 };
 
@@ -44,7 +51,7 @@ function CardRevealer({ cardId, onReset }: Props) {
       </Heading>
 
       <CardAnimationWrapper
-        {...scaleBlurAnimation}
+        {...scaleBlurRevealAnimation}
         onAnimationComplete={() => setShowResetButton(true)}
       >
         <Card id={cardId} status="faceUp" height={380} />
