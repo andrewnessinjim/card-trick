@@ -112,6 +112,14 @@ const RowWrapper = styled(motion.button)`
   gap: 16px;
   background-color: transparent;
   border: none;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    outline-offset: 2px;
+    outline: 3px dotted rgba(255, 255, 255, 0.75);
+    background: rgba(255, 255, 255, 0.25);
+  }
 `;
 
 export default Table;
