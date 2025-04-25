@@ -62,59 +62,60 @@ import * as React from "react";
 import styled, { css } from "styled-components";
 
 export const FLIP_DURATION_SECS = 1.2; // seconds
+console.log("Rendering all cards");
 const cardIdMap = {
-  C2: Clubs2,
-  C3: Clubs3,
-  C4: Clubs4,
-  C5: Clubs5,
-  C6: Clubs6,
-  C7: Clubs7,
-  C8: Clubs8,
-  C9: Clubs9,
-  C10: Clubs10,
-  CJ: ClubsJack,
-  CQ: ClubsQueen,
-  CK: ClubsKing,
-  CA: ClubsAce,
-  D2: Diamonds2,
-  D3: Diamonds3,
-  D4: Diamonds4,
-  D5: Diamonds5,
-  D6: Diamonds6,
-  D7: Diamonds7,
-  D8: Diamonds8,
-  D9: Diamonds9,
-  D10: Diamonds10,
-  DJ: DiamondsJack,
-  DQ: DiamondsQueen,
-  DK: DiamondsKing,
-  DA: DiamondsAce,
-  H2: Hearts2,
-  H3: Hearts3,
-  H4: Hearts4,
-  H5: Hearts5,
-  H6: Hearts6,
-  H7: Hearts7,
-  H8: Hearts8,
-  H9: Hearts9,
-  H10: Hearts10,
-  HJ: HeartsJack,
-  HQ: HeartsQueen,
-  HK: HeartsKing,
-  HA: HeartsAce,
-  S2: Spades2,
-  S3: Spades3,
-  S4: Spades4,
-  S5: Spades5,
-  S6: Spades6,
-  S7: Spades7,
-  S8: Spades8,
-  S9: Spades9,
-  S10: Spades10,
-  SJ: SpadesJack,
-  SQ: SpadesQueen,
-  SK: SpadesKing,
-  SA: SpadesAce,
+  C2: <Clubs2 />,
+  C3: <Clubs3 />,
+  C4: <Clubs4 />,
+  C5: <Clubs5 />,
+  C6: <Clubs6 />,
+  C7: <Clubs7 />,
+  C8: <Clubs8 />,
+  C9: <Clubs9 />,
+  C10: <Clubs10 />,
+  CJ: <ClubsJack />,
+  CQ: <ClubsQueen />,
+  CK: <ClubsKing />,
+  CA: <ClubsAce />,
+  D2: <Diamonds2 />,
+  D3: <Diamonds3 />,
+  D4: <Diamonds4 />,
+  D5: <Diamonds5 />,
+  D6: <Diamonds6 />,
+  D7: <Diamonds7 />,
+  D8: <Diamonds8 />,
+  D9: <Diamonds9 />,
+  D10: <Diamonds10 />,
+  DJ: <DiamondsJack />,
+  DQ: <DiamondsQueen />,
+  DK: <DiamondsKing />,
+  DA: <DiamondsAce />,
+  H2: <Hearts2 />,
+  H3: <Hearts3 />,
+  H4: <Hearts4 />,
+  H5: <Hearts5 />,
+  H6: <Hearts6 />,
+  H7: <Hearts7 />,
+  H8: <Hearts8 />,
+  H9: <Hearts9 />,
+  H10: <Hearts10 />,
+  HJ: <HeartsJack />,
+  HQ: <HeartsQueen />,
+  HK: <HeartsKing />,
+  HA: <HeartsAce />,
+  S2: <Spades2 />,
+  S3: <Spades3 />,
+  S4: <Spades4 />,
+  S5: <Spades5 />,
+  S6: <Spades6 />,
+  S7: <Spades7 />,
+  S8: <Spades8 />,
+  S9: <Spades9 />,
+  S10: <Spades10 />,
+  SJ: <SpadesJack />,
+  SQ: <SpadesQueen />,
+  SK: <SpadesKing />,
+  SA: <SpadesAce />,
 };
 
 type Status = "faceUp" | "faceDown";
@@ -127,15 +128,9 @@ interface Props {
   height?: number;
 }
 
-const RawCard = React.memo(function RawCard({
-  id,
-  height,
-}: {
-  id: CardId;
-  height: number;
-}) {
-  const CardElement = cardIdMap[id];
-  return <CardElement height={height} />;
+const RawCard = React.memo(function RawCard({ id }: { id: CardId }) {
+  const cardElement = cardIdMap[id];
+  return cardElement;
 });
 
 function Card({ id, status = "faceDown", afterFlip, height = 180 }: Props) {
@@ -144,7 +139,6 @@ function Card({ id, status = "faceDown", afterFlip, height = 180 }: Props) {
       style={
         {
           "--height": `${height}px`,
-          "--width": height === 180 ? "127.42px" : undefined,
         } as React.CSSProperties
       }
       initial={status}
@@ -159,10 +153,10 @@ function Card({ id, status = "faceDown", afterFlip, height = 180 }: Props) {
       }}
     >
       <FrontFace>
-        <RawCard id={id} height={height} />
+        <RawCard id={id} />
       </FrontFace>
       <BackFace>
-        <CardBack height={height} />
+        <CardBack />
       </BackFace>
     </Wrapper>
   );
@@ -172,14 +166,11 @@ const Wrapper = styled(motion.div)`
   width: fit-content;
   position: relative;
   transform-style: preserve-3d;
-  height: var(--height, 180px);
-  width: var(--width, "auto");
 `;
 
 const Face = css`
   backface-visibility: hidden;
-  width: 100%;
-  height: 100%;
+  height: var(--height);
 `;
 
 const FrontFace = styled.div`

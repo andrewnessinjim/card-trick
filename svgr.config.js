@@ -21,5 +21,8 @@ module.exports = {
       },
     ],
   },
+  svgProps: {
+    height: "100%",
+  },
   filenameCase: "kebab",
 };
