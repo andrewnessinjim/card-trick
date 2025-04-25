@@ -42,3 +42,30 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 | `spreadTrackedCardsInDifferentRows` | `distributeTrackedCards`                                    | Variable name must create a picture      |
 | `spreadUntrackedCardsRandomly`      | `scatterUntrackedCards`                                     | Variable name must create a picture      |
 | `tableCards` used for two purposes  | Used two variable names: `tableCards` & `fakeShuffledCards` | Each variable must have a unique purpose |
+
+## Reduce Obscurity
+
+```jsx
+<TableWashShuffler
+  animating={animatingShuffle}
+  onShufflingAnimationComplete={() => setStatus("idle")}
+  keys={deck.map((card) => card.id)}
+>
+  {deck.map((card) => (
+    //{...itemToAnimate}
+  ))}
+</TableWashShuffler>
+```
+
+```jsx
+<WashAnimator.Root
+    animate={animatingShuffle}
+    onComplete={() => setStatus("idle")}
+>
+    {deck.map((card, index) => (
+    <WashAnimator.Item key={card.id}>
+      //{...itemToAnimate}
+    </WashAnimator.Item>
+    ))}
+</WashAnimator.Root>
+```

@@ -3,7 +3,7 @@ import React from "react";
 export default function useCounter(maxCount: number) {
   const counter = React.useRef(0);
 
-  const count = React.useCallback(() => {
+  const increment = React.useCallback(() => {
     counter.current += 1;
   }, []);
 
@@ -16,7 +16,7 @@ export default function useCounter(maxCount: number) {
   }, []);
 
   return {
-    count,
+    increment,
     reset,
     maxCounted,
   };

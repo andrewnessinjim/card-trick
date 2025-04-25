@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import Card, { CardId } from "../Card";
 import { motion } from "motion/react";
-import TableWashShuffler from "./TableWashShuffler";
+import * as WashAnimator from "./WashAnimator";
 import _ from "lodash";
 import DeckTableCardMover from "../DeckTableCardMover";
 import Button from "../Button";
@@ -35,19 +35,20 @@ function Deck({ onCardsDrawn, showControls }: Props) {
   return (
     <Wrapper>
       <DeckWrapper>
-        <TableWashShuffler
-          animating={animatingShuffle}
-          onShufflingAnimationComplete={() => setStatus("idle")}
-          keys={deck.map((card) => card.id)}
+        <WashAnimator.Root
+          animate={animatingShuffle}
+          onComplete={() => setStatus("idle")}
         >
           {deck.map((card) => (
-            <CardSlot key={card.id}>
-              <DeckTableCardMover cardId={card.id} spot="deck">
-                <Card id={card.id} />
-              </DeckTableCardMover>
-            </CardSlot>
+            <WashAnimator.Item key={card.id}>
+              <CardSlot>
+                <DeckTableCardMover cardId={card.id} spot="deck">
+                  <Card id={card.id} />
+                </DeckTableCardMover>
+              </CardSlot>
+            </WashAnimator.Item>
           ))}
-        </TableWashShuffler>
+        </WashAnimator.Root>
       </DeckWrapper>
       {showControls && (
         <ControlsWrapper>
