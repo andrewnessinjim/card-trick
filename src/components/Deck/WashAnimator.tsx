@@ -30,20 +30,17 @@ const WashAnimatorContext = React.createContext<WashAnimatorContextType | null>(
 function Root({ children, onComplete, animate }: RootProps) {
   const [status, setStatus] = React.useState<Status>("idle");
 
-  React.useEffect(() => {
-    if (animate) {
-      setStatus("spreading");
-      return;
-    }
-    setStatus("idle");
-  }, [animate]);
+  const shouldStartAnimation = animate && status === "idle";
+  if (shouldStartAnimation) {
+    setStatus("spreading");
+  }
 
   const {
     increment: countAnimatedCard,
     reset: resetAnimatedCardCount,
     maxCounted: allCardsAnimated,
   } = useCounter(children.length);
-
+  console.log("WashAnimator: ", { animate, status});
   return (
     <WashAnimatorContext.Provider
       value={{

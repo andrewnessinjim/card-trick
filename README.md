@@ -59,13 +59,40 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ```jsx
 <WashAnimator.Root
-    animate={animatingShuffle}
-    onComplete={() => setStatus("idle")}
+  animate={animatingShuffle}
+  onComplete={() => setStatus("idle")}
 >
-    {deck.map((card, index) => (
-    <WashAnimator.Item key={card.id}>
-      //{...itemToAnimate}
-    </WashAnimator.Item>
-    ))}
+  {deck.map((card, index) => (
+    <WashAnimator.Item key={card.id}>//{...itemToAnimate}</WashAnimator.Item>
+  ))}
 </WashAnimator.Root>
+```
+
+## Avoid Effects As Much As Possible
+
+Instead of using the following `useEffect` in `WashAnimator.Root`:
+
+```jsx
+React.useEffect(() => {
+  if (animate) {
+    setStatus("spreading");
+    return;
+  }
+}, [animate]);
+```
+
+We can directly set the status while rendering the component (as suggested in [the official React documentation][1]):
+
+```jsx
+const shouldStartAnimation = animate && status === "idle";
+if (shouldStartAnimation) {
+  setStatus("spreading");
+}
+```
+
+This avoids unnecessary re-renders and makes the code more readable. Side-effects are hard to follow. By avoiding them, we can make the code more predictable.
+
+```
+
+[1]: https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
 ```

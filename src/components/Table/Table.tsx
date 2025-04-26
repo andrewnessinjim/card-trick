@@ -1,11 +1,12 @@
 import * as React from "react";
 import styled from "styled-components";
-import Card, { CardId, FLIP_DURATION_SECS } from "../Card";
+import Card, { CardId } from "../Card";
 import { LayoutGroup, motion } from "motion/react";
 import DeckTableCardMover from "../DeckTableCardMover";
 import useCardStatuses from "./useCardStatuses";
 import _ from "lodash";
 import Jumper from "./Jumper";
+import useCounter from "../Deck/useCounter";
 
 interface Props {
   cardsGrid?: CardId[][];
@@ -14,7 +15,7 @@ interface Props {
   onRowPick: (row: number) => void;
 }
 
-type TableStatus = "idle" | "animating-shuffle" | "picking";
+type TableStatus = "idle" | "picking" | "faceDown";
 function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
   const { cardStatuses, setCardStatus, setAllFaceDown } = useCardStatuses(
     _.flatten(cardsGrid)
@@ -22,14 +23,10 @@ function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
   const [focusedRow, setFocusedRow] = React.useState<number | null>(null);
   const [tableStatus, setTableStatus] = React.useState<TableStatus>("idle");
 
-  React.useEffect(() => {
-    if (allFaceDown) {
-      setAllFaceDown();
-      setTimeout(() => {
-        onAllFaceDown?.();
-      }, FLIP_DURATION_SECS * 1000);
-    }
-  }, [allFaceDown, setAllFaceDown, onAllFaceDown]);
+  if (allFaceDown && tableStatus !== "faceDown") {
+    setAllFaceDown();
+    setTableStatus("faceDown");
+  }
 
   function getRowOpacity(rowIndex: number) {
     if (focusedRow === null || tableStatus !== "picking") return 1;
@@ -42,6 +39,22 @@ function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
       setTableStatus("picking");
     }
   }, [tableStatus]);
+
+  const {
+    increment: countFaceDownCard,
+    reset: resetFaceDownCardCount,
+    maxCounted: allCardsFaceDown,
+  } = useCounter(_.flatten(cardsGrid).length);
+
+  function trackFaceDownAndNotifyCompletion(cardId: CardId) {
+    setCardStatus(cardId, "faceDown");
+    countFaceDownCard();
+
+    if (allCardsFaceDown()) {
+      onAllFaceDown?.();
+      resetFaceDownCardCount();
+    }
+  }
 
   return (
     <Wrapper>
@@ -86,7 +99,12 @@ function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
                     <Card
                       id={cardId}
                       status={cardStatuses[cardId]}
-                      afterFlip={isLastCard ? startPickingIfIdle : undefined}
+                      onFaceUp={isLastCard ? startPickingIfIdle : undefined}
+                      onFaceDown={
+                        tableStatus === "faceDown"
+                          ? () => trackFaceDownAndNotifyCompletion(cardId)
+                          : undefined
+                      }
                     />
                   </DeckTableCardMover>
                 </Jumper>

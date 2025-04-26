@@ -124,8 +124,9 @@ export type CardId = keyof typeof cardIdMap;
 interface Props {
   id: CardId;
   status?: Status;
-  afterFlip?: () => void;
   height?: number;
+  onFaceDown?: () => void;
+  onFaceUp?: () => void;
 }
 
 const RawCard = React.memo(function RawCard({ id }: { id: CardId }) {
@@ -133,7 +134,13 @@ const RawCard = React.memo(function RawCard({ id }: { id: CardId }) {
   return cardElement;
 });
 
-function Card({ id, status = "faceDown", afterFlip, height = 180 }: Props) {
+function Card({
+  id,
+  status = "faceDown",
+  onFaceDown,
+  onFaceUp,
+  height = 180,
+}: Props) {
   return (
     <Wrapper
       style={
@@ -149,7 +156,12 @@ function Card({ id, status = "faceDown", afterFlip, height = 180 }: Props) {
         faceDown: { rotateY: 180 },
       }}
       onAnimationComplete={() => {
-        afterFlip?.();
+        if (status === "faceDown") {
+          onFaceDown?.();
+        }
+        if (status === "faceUp") {
+          onFaceUp?.();
+        }
       }}
     >
       <FrontFace>
