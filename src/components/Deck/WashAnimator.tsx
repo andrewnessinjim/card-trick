@@ -2,7 +2,7 @@ import _ from "lodash";
 import { motion, MotionProps } from "motion/react";
 import React, { ReactElement, ReactNode } from "react";
 import styled from "styled-components";
-import useCounter from "./useCounter";
+import useBatchCountNotifier from "@/hooks/useBatchCountNotifier";
 
 interface RootProps {
   children: ReactElement<typeof Item>[];
@@ -12,15 +12,13 @@ interface RootProps {
 
 type Status = "spreading" | "stacking" | "idle" | "washing";
 
-const animatingStatuses: Status[] = ["spreading", "stacking", "washing"];
+
 
 type WashAnimatorContextType = {
   status: Status;
   setStatus: React.Dispatch<React.SetStateAction<Status>>;
-  countAnimatedCard: () => void;
-  resetAnimatedCardCount: () => void;
-  allCardsAnimated: () => boolean;
   onComplete: () => void;
+  countAnimatedCard: (latestStatus: Status) => void;
 };
 
 const WashAnimatorContext = React.createContext<WashAnimatorContextType | null>(
@@ -35,21 +33,32 @@ function Root({ children, onComplete, animate }: RootProps) {
     setStatus("spreading");
   }
 
-  const {
-    increment: countAnimatedCard,
-    reset: resetAnimatedCardCount,
-    maxCounted: allCardsAnimated,
-  } = useCounter(children.length);
-  console.log("WashAnimator: ", { animate, status});
+  const statusFlow: Record<Status, Status> = {
+    spreading: "washing",
+    washing: "stacking",
+    stacking: "idle",
+    idle: "idle",
+  };
+
+  const { increment: countAnimatedCard } = useBatchCountNotifier<Status>(
+    React.Children.count(children),
+    (latestStatus) => {
+      const nextStatus = statusFlow[latestStatus];
+      setStatus(nextStatus);
+
+      if (nextStatus === "idle") {
+        onComplete();
+      }
+    }
+  );
+
   return (
     <WashAnimatorContext.Provider
       value={{
         status,
         setStatus,
-        countAnimatedCard,
-        resetAnimatedCardCount,
-        allCardsAnimated,
         onComplete,
+        countAnimatedCard,
       }}
     >
       {children}
@@ -71,39 +80,15 @@ function useWashAnimatorContext() {
   return context;
 }
 
+const animatingStatuses: Status[] = ["spreading", "stacking", "washing"];
 function Item({ children }: ItemProps) {
-  const {
-    status,
-    setStatus,
-    countAnimatedCard,
-    resetAnimatedCardCount,
-    allCardsAnimated,
-    onComplete,
-  } = useWashAnimatorContext();
+  const { status, countAnimatedCard } = useWashAnimatorContext();
   return (
     <ItemWrapper
       {...animationSettings(status)}
       onAnimationComplete={(latest: Status) => {
-        const statusFlow: Record<Status, Status> = {
-          spreading: "washing",
-          washing: "stacking",
-          stacking: "idle",
-          idle: "idle",
-        };
-
         if (animatingStatuses.includes(latest)) {
-          countAnimatedCard();
-
-          if (allCardsAnimated()) {
-            resetAnimatedCardCount();
-
-            const nextStatus = statusFlow[latest];
-            setStatus(nextStatus);
-
-            if (nextStatus === "idle") {
-              onComplete();
-            }
-          }
+          countAnimatedCard(latest);
         }
       }}
     >

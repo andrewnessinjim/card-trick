@@ -6,7 +6,7 @@ import DeckTableCardMover from "../DeckTableCardMover";
 import useCardStatuses from "./useCardStatuses";
 import _ from "lodash";
 import Jumper from "./Jumper";
-import useCounter from "../Deck/useCounter";
+import useBatchCountNotifier from "@/hooks/useBatchCountNotifier";
 
 interface Props {
   cardsGrid?: CardId[][];
@@ -40,20 +40,16 @@ function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
     }
   }, [tableStatus]);
 
-  const {
-    increment: countFaceDownCard,
-    reset: resetFaceDownCardCount,
-    maxCounted: allCardsFaceDown,
-  } = useCounter(_.flatten(cardsGrid).length);
+  const { increment: countFaceDownCard } = useBatchCountNotifier(
+    _.flatten(cardsGrid).length,
+    () => {
+      onAllFaceDown?.();
+    }
+  );
 
   function trackFaceDownAndNotifyCompletion(cardId: CardId) {
     setCardStatus(cardId, "faceDown");
     countFaceDownCard();
-
-    if (allCardsFaceDown()) {
-      onAllFaceDown?.();
-      resetFaceDownCardCount();
-    }
   }
 
   return (

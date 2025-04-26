@@ -77,3 +77,9 @@ h6 {
 body {
   background-color: hsl(128 30.6% 9.6%);
 }
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
