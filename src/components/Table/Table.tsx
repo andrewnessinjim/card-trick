@@ -1,12 +1,12 @@
 import * as React from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import Card, { CardId } from "../Card";
 import { LayoutGroup, motion } from "motion/react";
 import DeckTableCardMover from "../DeckTableCardMover";
 import useCardStatuses from "./useCardStatuses";
 import _ from "lodash";
-import Jumper from "./Jumper";
 import useBatchCountNotifier from "@/hooks/useBatchCountNotifier";
+import * as HighlightableCardRows from "./HighlightableCardRows";
 
 interface Props {
   cardsGrid?: CardId[][];
@@ -21,18 +21,11 @@ function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
   const { cardStatuses, setCardStatus, setAllFaceDown } = useCardStatuses(
     _.flatten(cardsGrid)
   );
-  const [focusedRow, setFocusedRow] = React.useState<number | null>(null);
   const [tableStatus, setTableStatus] = React.useState<TableStatus>("idle");
 
   if (allFaceDown && tableStatus !== "faceDown") {
     setAllFaceDown();
     setTableStatus("faceDown");
-  }
-
-  function getRowOpacity(rowIndex: number) {
-    if (focusedRow === null || tableStatus !== "picking") return 1;
-    if (focusedRow === rowIndex) return 1;
-    return 0.75;
   }
 
   const startPickingIfIdle = React.useCallback(() => {
@@ -41,83 +34,74 @@ function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
     }
   }, [tableStatus]);
 
-  const { notifiableCount: countFaceDownCard } = useBatchCountNotifier(
+  const { notifiableCount: countFaceDownNotifiable } = useBatchCountNotifier(
     _.flatten(cardsGrid).length,
     () => onAllFaceDown?.()
   );
 
   function trackFaceDownAndNotifyCompletion(cardId: CardId) {
     setCardStatus(cardId, "faceDown");
-    countFaceDownCard();
+    countFaceDownNotifiable();
   }
 
-  console.log({ focusedRow });
+  function handleRowClick(rowIndex: number) {
+    if (tableStatus !== "picking") return;
+
+    setTableStatus("shuffle-animating");
+    setTimeout(() => {
+      setTableStatus("picking");
+    }, _.flatten(cardsGrid).length * CARD_SHUFFLE_STAGGER_DELAY * 1000 + 1000);
+    onRowPick(rowIndex);
+  }
 
   return (
     <Wrapper>
       <LayoutGroup>
-        {cardsGrid?.map((cardsRow, rowIndex) => (
-          <RowWrapper
-            animate={{
-              opacity: getRowOpacity(rowIndex),
-            }}
-            $focused={focusedRow === rowIndex && tableStatus === "picking"}
-            key={rowIndex}
-            onClick={() => {
-              if (tableStatus !== "picking") return;
-
-              setTableStatus("shuffle-animating");
-              setTimeout(() => {
-                setTableStatus("picking");
-              }, _.flatten(cardsGrid).length * CARD_SHUFFLE_STAGGER_DELAY * 1000 + 1000);
-              onRowPick(rowIndex);
-            }}
-            onMouseEnter={() => setFocusedRow(rowIndex)}
-            onMouseLeave={() => setFocusedRow(null)}
-            onFocus={() => setFocusedRow(rowIndex)}
-            onBlur={() => setFocusedRow(null)}
-          >
-            {cardsRow.map((cardId, colIndex) => {
-              const isLastCard =
-                rowIndex === cardsGrid.length - 1 &&
-                colIndex === cardsRow.length - 1;
-              return (
-                <Jumper
-                  key={cardId}
-                  order={colIndex}
-                  jump={tableStatus === "picking" && focusedRow === rowIndex}
-                >
-                  <DeckTableCardMover
-                    cardId={cardId}
-                    order={rowIndex * cardsRow.length + colIndex}
-                    staggerDelay={
-                      tableStatus === "picking"
-                        ? CARD_SHUFFLE_STAGGER_DELAY
-                        : undefined
-                    }
-                    spot="table"
-                    onMoveComplete={() => {
-                      if (tableStatus === "idle") {
-                        setCardStatus(cardId, "faceUp");
-                      }
-                    }}
-                  >
-                    <Card
-                      id={cardId}
-                      status={cardStatuses[cardId]}
-                      onFaceUp={isLastCard ? startPickingIfIdle : undefined}
-                      onFaceDown={
-                        tableStatus === "faceDown"
-                          ? () => trackFaceDownAndNotifyCompletion(cardId)
+        <HighlightableCardRows.Root canHighlight={tableStatus === "picking"}>
+          {cardsGrid?.map((cardsRow, rowIndex) => (
+            <HighlightableCardRows.Row
+              key={rowIndex}
+              order={rowIndex}
+              onClick={() => handleRowClick(rowIndex)}
+            >
+              {cardsRow.map((cardId, colIndex) => {
+                const isLastCard =
+                  rowIndex === cardsGrid.length - 1 &&
+                  colIndex === cardsRow.length - 1;
+                return (
+                  <HighlightableCardRows.Item key={cardId} order={colIndex}>
+                    <DeckTableCardMover
+                      cardId={cardId}
+                      order={rowIndex * cardsRow.length + colIndex}
+                      staggerDelay={
+                        tableStatus === "picking"
+                          ? CARD_SHUFFLE_STAGGER_DELAY
                           : undefined
                       }
-                    />
-                  </DeckTableCardMover>
-                </Jumper>
-              );
-            })}
-          </RowWrapper>
-        ))}
+                      spot="table"
+                      onMoveComplete={() => {
+                        if (tableStatus === "idle") {
+                          setCardStatus(cardId, "faceUp");
+                        }
+                      }}
+                    >
+                      <Card
+                        id={cardId}
+                        status={cardStatuses[cardId]}
+                        onFaceUp={isLastCard ? startPickingIfIdle : undefined}
+                        onFaceDown={
+                          tableStatus === "faceDown"
+                            ? () => trackFaceDownAndNotifyCompletion(cardId)
+                            : undefined
+                        }
+                      />
+                    </DeckTableCardMover>
+                  </HighlightableCardRows.Item>
+                );
+              })}
+            </HighlightableCardRows.Row>
+          ))}
+        </HighlightableCardRows.Root>
       </LayoutGroup>
     </Wrapper>
   );
@@ -129,22 +113,6 @@ const Wrapper = styled(motion.div)`
   gap: 16px;
   width: fit-content;
   margin: 0 auto;
-`;
-
-const RowWrapper = styled(motion.button)<{ $focused: boolean }>`
-  display: flex;
-  gap: 16px;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  outline-offset: 2px;
-
-  ${({ $focused }) =>
-    $focused &&
-    css`
-      outline: 3px dotted rgba(255, 255, 255, 0.75);
-      background: rgba(255, 255, 255, 0.25);
-    `}
 `;
 
 export default Table;
