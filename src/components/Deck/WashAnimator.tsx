@@ -40,7 +40,7 @@ function Root({ children, onComplete, animate }: RootProps) {
     idle: "idle",
   };
 
-  const { increment: countAnimatedCard } = useBatchCountNotifier<Status>(
+  const { notifiableCount: countAnimatedCard } = useBatchCountNotifier<Status>(
     React.Children.count(children),
     (latestStatus) => {
       const nextStatus = statusFlow[latestStatus];
