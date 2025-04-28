@@ -1,5 +1,5 @@
 import * as React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Card, { CardId } from "../Card";
 import { LayoutGroup, motion } from "motion/react";
 import DeckTableCardMover from "../DeckTableCardMover";
@@ -15,7 +15,8 @@ interface Props {
   onRowPick: (row: number) => void;
 }
 
-type TableStatus = "idle" | "picking" | "faceDown";
+const CARD_SHUFFLE_STAGGER_DELAY = 0.05; // seconds
+type TableStatus = "idle" | "picking" | "shuffle-animating" | "faceDown";
 function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
   const { cardStatuses, setCardStatus, setAllFaceDown } = useCardStatuses(
     _.flatten(cardsGrid)
@@ -40,17 +41,17 @@ function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
     }
   }, [tableStatus]);
 
-  const { increment: countFaceDownCard } = useBatchCountNotifier(
+  const { notifiableCount: countFaceDownCard } = useBatchCountNotifier(
     _.flatten(cardsGrid).length,
-    () => {
-      onAllFaceDown?.();
-    }
+    () => onAllFaceDown?.()
   );
 
   function trackFaceDownAndNotifyCompletion(cardId: CardId) {
     setCardStatus(cardId, "faceDown");
     countFaceDownCard();
   }
+
+  console.log({ focusedRow });
 
   return (
     <Wrapper>
@@ -60,10 +61,15 @@ function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
             animate={{
               opacity: getRowOpacity(rowIndex),
             }}
+            $focused={focusedRow === rowIndex && tableStatus === "picking"}
             key={rowIndex}
             onClick={() => {
               if (tableStatus !== "picking") return;
-              setFocusedRow(null);
+
+              setTableStatus("shuffle-animating");
+              setTimeout(() => {
+                setTableStatus("picking");
+              }, _.flatten(cardsGrid).length * CARD_SHUFFLE_STAGGER_DELAY * 1000 + 1000);
               onRowPick(rowIndex);
             }}
             onMouseEnter={() => setFocusedRow(rowIndex)}
@@ -84,7 +90,11 @@ function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
                   <DeckTableCardMover
                     cardId={cardId}
                     order={rowIndex * cardsRow.length + colIndex}
-                    staggerDelay={tableStatus === "picking" ? 0.05 : undefined}
+                    staggerDelay={
+                      tableStatus === "picking"
+                        ? CARD_SHUFFLE_STAGGER_DELAY
+                        : undefined
+                    }
                     spot="table"
                     onMoveComplete={() => {
                       if (tableStatus === "idle") {
@@ -121,19 +131,20 @@ const Wrapper = styled(motion.div)`
   margin: 0 auto;
 `;
 
-const RowWrapper = styled(motion.button)`
+const RowWrapper = styled(motion.button)<{ $focused: boolean }>`
   display: flex;
   gap: 16px;
   background-color: transparent;
   border: none;
   cursor: pointer;
+  outline-offset: 2px;
 
-  &:hover,
-  &:focus {
-    outline-offset: 2px;
-    outline: 3px dotted rgba(255, 255, 255, 0.75);
-    background: rgba(255, 255, 255, 0.25);
-  }
+  ${({ $focused }) =>
+    $focused &&
+    css`
+      outline: 3px dotted rgba(255, 255, 255, 0.75);
+      background: rgba(255, 255, 255, 0.25);
+    `}
 `;
 
 export default Table;
