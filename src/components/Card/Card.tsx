@@ -60,6 +60,7 @@ import SpadesAce from "@/generated/cards/sa";
 
 import * as React from "react";
 import styled, { css } from "styled-components";
+import { DEFAULT_CARD_HEIGHT } from "@/constants";
 
 export const FLIP_DURATION_SECS = 1.2; // seconds
 console.log("Rendering all cards");
@@ -139,7 +140,7 @@ function Card({
   status = "faceDown",
   onFaceDown,
   onFaceUp,
-  height = 180,
+  height = DEFAULT_CARD_HEIGHT,
 }: Props) {
   return (
     <Wrapper

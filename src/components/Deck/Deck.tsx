@@ -1,13 +1,15 @@
 import * as React from "react";
 import styled from "styled-components";
+import { motion } from "motion/react";
+import _ from "lodash";
 
 import Card, { CardId } from "../Card";
-import { motion } from "motion/react";
 import * as WashAnimator from "./WashAnimator";
-import _ from "lodash";
 import DeckTableCardMover from "../DeckTableCardMover";
 import Button from "../Button";
 import DECK_INIT_DATA from "./deckInitData";
+import BlueBack from "@/generated/cards/back-blue-plain";
+import { DEFAULT_CARD_HEIGHT } from "@/constants";
 
 export interface Card {
   id: CardId;
@@ -36,18 +38,21 @@ function Deck({ onCardsDrawn, showControls, isResetting }: Props) {
   return (
     <Wrapper>
       <DeckWrapper>
+        <InvisibleCard>
+          <BlueBack height={DEFAULT_CARD_HEIGHT} />
+        </InvisibleCard>
         <WashAnimator.Root
           animate={animatingShuffle}
           onComplete={() => setStatus("idle")}
         >
           {deck.map((card) => (
-            <WashAnimator.Item key={card.id}>
-              <CardSlot>
+            <CardSlot key={card.id}>
+              <WashAnimator.Item>
                 <DeckTableCardMover cardId={card.id} spot="deck">
                   <Card id={card.id} />
                 </DeckTableCardMover>
-              </CardSlot>
-            </WashAnimator.Item>
+              </WashAnimator.Item>
+            </CardSlot>
           ))}
         </WashAnimator.Root>
       </DeckWrapper>
@@ -91,13 +96,15 @@ const ControlsWrapper = styled.div`
 
 const DeckWrapper = styled.div`
   position: relative;
-  width: 127.42px;
-  height: 180px;
 `;
 
 const CardSlot = styled(motion.div)`
   position: absolute;
   top: 0;
   left: 0;
+`;
+
+const InvisibleCard = styled(motion.div)`
+  opacity: 0;
 `;
 export default Deck;
