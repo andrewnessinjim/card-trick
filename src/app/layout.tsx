@@ -1,17 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Macondo } from "next/font/google";
 import "./globals.css";
 import StyledComponentsRegistry from "@/components/StyledComponentsRegistry";
 import { MotionConfig } from "motion/react";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const macondoSans = Macondo({
+  variable: "--font-macondo",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -27,7 +23,7 @@ export default function RootLayout({
   return (
     <MotionConfig reducedMotion="user">
       <html lang="en">
-        <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <body className={`${macondoSans.variable}`}>
           <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
         </body>
       </html>

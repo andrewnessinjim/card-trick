@@ -47,7 +47,7 @@ function CardRevealer({ cardId, onReset }: Props) {
   return (
     <Wrapper {...opacityAnimation}>
       <Heading initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-        The Card you picked was
+        The Card You Picked Was
       </Heading>
 
       <CardAnimationWrapper

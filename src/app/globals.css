@@ -78,6 +78,10 @@ body {
   background-color: hsl(128 30.6% 9.6%);
 }
 
+body {
+  font-family: var(--font-macondo), sans-serif;
+}
+
 html,
 body {
   height: 100%;
