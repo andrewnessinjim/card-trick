@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
-import { motion, MotionProps } from "motion/react";
+import { AnimatePresence, motion, MotionProps } from "motion/react";
 import * as Dialog from "@radix-ui/react-dialog";
 
 import Card, { CardId } from "../Card/Card";
@@ -8,39 +8,49 @@ import Button from "../Button";
 
 function CardRevealer({ cardId, onReset }: Props) {
   const [showResetButton, setShowResetButton] = React.useState(false);
+  const [isExiting, setIsExiting] = React.useState(false);
 
   return (
     <Wrapper>
       <Dialog.Root open={true}>
         <Dialog.Portal>
           <Dialog.Overlay asChild forceMount>
-            <Overlay {...opacityAnimation} />
+            <AnimatePresence>
+              {!isExiting && <Overlay {...opacityAnimation} />}
+            </AnimatePresence>
           </Dialog.Overlay>
 
           <Dialog.Content asChild forceMount>
-            <Content>
-              <Dialog.Title asChild>
-                <Heading {...opacityAnimation}>The card you picked was</Heading>
-              </Dialog.Title>
-              <CardAnimationWrapper
-                {...scaleBlurRevealAnimation}
-                onAnimationComplete={() => setShowResetButton(true)}
-              >
-                <Card id={cardId} status="faceUp" height={380} />
-              </CardAnimationWrapper>
-              <ButtonVisibilityWrapper
-                animate={{ opacity: showResetButton ? 1 : 0 }}
-              >
-                <InvisibleButton initial={{ opacity: 0 }}>
-                  <Button onClick={() => {}}>Reset</Button>
-                </InvisibleButton>
-                <VisibleButton>
-                  <Button onClick={onReset} show={showResetButton}>
-                    Reset
-                  </Button>
-                </VisibleButton>
-              </ButtonVisibilityWrapper>
-            </Content>
+            <AnimatePresence onExitComplete={onReset}>
+              {!isExiting && (
+                <Content {...opacityAnimation}>
+                  <Dialog.Title asChild>
+                    <Heading>The card you picked was</Heading>
+                  </Dialog.Title>
+                  <CardAnimationWrapper
+                    {...scaleBlurRevealAnimation}
+                    onAnimationComplete={() => setShowResetButton(true)}
+                  >
+                    <Card id={cardId} status="faceUp" height={380} />
+                  </CardAnimationWrapper>
+                  <ButtonVisibilityWrapper
+                    animate={{ opacity: showResetButton ? 1 : 0 }}
+                  >
+                    <InvisibleButton initial={{ opacity: 0 }}>
+                      <Button onClick={() => {}}>Reset</Button>
+                    </InvisibleButton>
+                    <VisibleButton>
+                      <Button
+                        onClick={() => setIsExiting(true)}
+                        show={showResetButton}
+                      >
+                        Reset
+                      </Button>
+                    </VisibleButton>
+                  </ButtonVisibilityWrapper>
+                </Content>
+              )}
+            </AnimatePresence>
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
