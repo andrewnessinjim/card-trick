@@ -1,4 +1,4 @@
-# A Card Trick Web App
+# A Card Trick Web App: Applying Lessons from the React Docs and the Book "A Philosophy of Software Design"
 
 You can find the app running [here][6].
 
