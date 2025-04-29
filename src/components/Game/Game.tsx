@@ -8,7 +8,6 @@ import Button from "../Button";
 import Spacer from "../Spacer";
 import useFakeShuffleTracker from "./useFakeShuffleTracker";
 import useTableCards from "./useTableCards";
-import { AnimatePresence } from "motion/react";
 import CardRevealer from "../CardRevealer";
 
 interface Props {
@@ -72,11 +71,12 @@ function Game({ onReset, isResetting }: Props) {
           }
         }}
       />
-      <AnimatePresence>
-        {gameStatus === "completed" && trackedCard && (
-          <CardRevealer cardId={trackedCard} onReset={resetGame} />
-        )}
-      </AnimatePresence>
+      {gameStatus === "completed" && trackedCard && (
+        <CardRevealer
+          cardId={trackedCard}
+          onReset={() => setGameStatus("resetting")}
+        />
+      )}
     </Wrapper>
   );
 }
