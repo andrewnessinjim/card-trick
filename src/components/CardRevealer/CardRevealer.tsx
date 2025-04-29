@@ -57,7 +57,14 @@ function CardRevealer({ cardId, onReset }: Props) {
         <Card id={cardId} status="faceUp" height={380} />
       </CardAnimationWrapper>
       <ButtonVisibilityWrapper animate={{ opacity: showResetButton ? 1 : 0 }}>
-        <Button onClick={onReset}>Reset</Button>
+        <InvisibleButton initial={{ opacity: 0 }}>
+          <Button onClick={() => {}}>Reset</Button>
+        </InvisibleButton>
+        <VisibleButton>
+          <Button onClick={onReset} show={showResetButton}>
+            Reset
+          </Button>
+        </VisibleButton>
       </ButtonVisibilityWrapper>
     </Wrapper>
   );
@@ -82,6 +89,16 @@ const Heading = styled(motion.h1)`
 
 const CardAnimationWrapper = styled(motion.div)``;
 
-const ButtonVisibilityWrapper = styled(motion.div)``;
+const ButtonVisibilityWrapper = styled(motion.div)`
+  position: relative;
+`;
+const InvisibleButton = styled(motion.div)`
+  opacity: 0;
+`;
+const VisibleButton = styled(motion.div)`
+  position: absolute;
+  top: 0;
+  left: 0;
+`;
 
 export default CardRevealer;

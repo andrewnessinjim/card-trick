@@ -8,16 +8,18 @@ import { AnimatePresence, motion } from "motion/react";
 function Resetter() {
   const [resetKey, setResetKey] = React.useState(0);
   const [isPending, startTransition] = React.useTransition();
+  const [isResetting, setIsResetting] = React.useState(false);
 
   const resetGame = React.useCallback(() => {
     startTransition(() => {
       setResetKey((prev) => prev + 1);
+      setIsResetting(true);
     });
   }, []);
 
   return (
     <Wrapper>
-      <Game key={resetKey} onReset={resetGame} />
+      <Game key={resetKey} onReset={resetGame} isResetting={isResetting} />
       <AnimatePresence>
         {isPending && (
           <LoadingIndicator

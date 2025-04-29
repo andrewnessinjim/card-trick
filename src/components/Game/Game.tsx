@@ -13,10 +13,11 @@ import CardRevealer from "../CardRevealer";
 
 interface Props {
   onReset: () => void;
+  isResetting: boolean;
 }
 
 export type GameStatus = "idle" | "playing" | "resetting" | "completed";
-function Game({ onReset }: Props) {
+function Game({ onReset, isResetting }: Props) {
   const {
     cardsGrid: fakeShuffleCardsGrid,
     setCards: setFakeShuffleCards,
@@ -41,6 +42,7 @@ function Game({ onReset }: Props) {
             setGameStatus("playing");
             setFakeShuffleCards(drawnCards);
           }}
+          isResetting={isResetting}
         />
         <Button
           onClick={() => {
@@ -48,6 +50,7 @@ function Game({ onReset }: Props) {
               setGameStatus("resetting");
             }
           }}
+          animateEntry={!isResetting}
         >
           Reset
         </Button>

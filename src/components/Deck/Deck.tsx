@@ -18,9 +18,10 @@ type Status = "idle" | "animating-shuffle";
 interface Props {
   onCardsDrawn: (cards: CardId[]) => void;
   showControls: boolean;
+  isResetting: boolean;
 }
 
-function Deck({ onCardsDrawn, showControls }: Props) {
+function Deck({ onCardsDrawn, showControls, isResetting }: Props) {
   const [deck, setDeck] = React.useState<Card[]>(DECK_INIT_DATA);
   const [status, setStatus] = React.useState<Status>("idle");
 
@@ -50,25 +51,28 @@ function Deck({ onCardsDrawn, showControls }: Props) {
           ))}
         </WashAnimator.Root>
       </DeckWrapper>
-      {showControls && (
-        <ControlsWrapper>
-          <Button
-            disabled={status === "animating-shuffle"}
-            onClick={() => shuffleDeck()}
-          >
-            Shuffle
-          </Button>
-          <Button
-            disabled={status === "animating-shuffle"}
-            onClick={() => {
-              setDeck(_.dropRight(deck, 21));
-              onCardsDrawn(_.takeRight(deck, 21).map((card) => card.id));
-            }}
-          >
-            Start
-          </Button>
-        </ControlsWrapper>
-      )}
+
+      <ControlsWrapper>
+        <Button
+          disabled={status === "animating-shuffle"}
+          onClick={() => shuffleDeck()}
+          show={showControls}
+          entryDelay={isResetting ? 1 : 0}
+        >
+          Shuffle
+        </Button>
+        <Button
+          disabled={status === "animating-shuffle"}
+          onClick={() => {
+            setDeck(_.dropRight(deck, 21));
+            onCardsDrawn(_.takeRight(deck, 21).map((card) => card.id));
+          }}
+          show={showControls}
+          entryDelay={isResetting ? 1 : 0}
+        >
+          Start
+        </Button>
+      </ControlsWrapper>
     </Wrapper>
   );
 }
