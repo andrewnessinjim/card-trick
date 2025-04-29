@@ -41,7 +41,6 @@ const LoadingIndicator = styled(motion.div)`
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.75);
-  color: white;
   display: grid;
   place-content: center;
   font-size: 3rem;

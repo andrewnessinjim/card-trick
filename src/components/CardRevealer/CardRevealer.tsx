@@ -115,9 +115,7 @@ const Content = styled(motion.div)`
   inset: 0;
 `;
 
-const Heading = styled(motion.h1)`
-  color: white;
-`;
+const Heading = styled(motion.h1)``;
 
 const CardAnimationWrapper = styled(motion.div)``;
 

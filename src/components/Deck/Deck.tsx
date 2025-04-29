@@ -11,19 +11,11 @@ import DECK_INIT_DATA from "./deckInitData";
 import BlueBack from "@/generated/cards/back-blue-plain";
 import { DEFAULT_CARD_HEIGHT } from "@/constants";
 
-export interface Card {
-  id: CardId;
-}
-
-type Status = "idle" | "animating-shuffle";
-
-interface Props {
-  onCardsDrawn: (cards: CardId[]) => void;
-  showControls: boolean;
-  isResetting: boolean;
-}
-
-function Deck({ onCardsDrawn, showControls, isResetting }: Props) {
+function Deck({
+  onCardsDrawn,
+  showControls,
+  isResetting,
+}: Props) {
   const [deck, setDeck] = React.useState<Card[]>(DECK_INIT_DATA);
   const [status, setStatus] = React.useState<Status>("idle");
 
@@ -80,6 +72,18 @@ function Deck({ onCardsDrawn, showControls, isResetting }: Props) {
       </ControlsWrapper>
     </Wrapper>
   );
+}
+
+export interface Card {
+  id: CardId;
+}
+
+type Status = "idle" | "animating-shuffle";
+
+interface Props {
+  onCardsDrawn: (cards: CardId[]) => void;
+  showControls: boolean;
+  isResetting: boolean;
 }
 
 const Wrapper = styled.div`

@@ -9,13 +9,19 @@ import Spacer from "../Spacer";
 import useFakeShuffleTracker from "./useFakeShuffleTracker";
 import useTableCards from "./useTableCards";
 import CardRevealer from "../CardRevealer";
+import InstructionBanner from "../InstructionBanner";
 
 interface Props {
   onReset: () => void;
   isResetting: boolean;
 }
 
-export type GameStatus = "idle" | "playing" | "resetting" | "completed";
+export type GameStatus =
+  | "idle"
+  | "playing"
+  | "resetting"
+  | "completed"
+  | "shuffling";
 function Game({ onReset, isResetting }: Props) {
   const {
     cardsGrid: fakeShuffleCardsGrid,
@@ -54,7 +60,12 @@ function Game({ onReset, isResetting }: Props) {
           Reset
         </Button>
       </TopPanelWrapper>
-      <Spacer size={32} />
+      <Spacer size={16} />
+      <InstructionBanner
+        gameStatus={gameStatus}
+        numRowsPicked={numRowsPicked}
+      />
+      <Spacer size={16} />
       <Table
         cardsGrid={tableCardsGrid}
         allFaceDown={gameStatus === "resetting"}

@@ -75,7 +75,12 @@ h6 {
 }
 
 body {
-  background-color: hsl(128 30.6% 9.6%);
+  --color-decorative-100: hsl(128 30% 4%);
+  --color-decorative-200: hsl(128 30% 9%);
+  --color-decorative-300: hsl(128 40% 15%);
+  --color-text: white;
+  background-color: var(--color-decorative-200);
+  color: var(--color-text);
 }
 
 body {

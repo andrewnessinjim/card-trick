@@ -8,15 +8,6 @@ import _ from "lodash";
 import useBatchCountNotifier from "@/hooks/useBatchCountNotifier";
 import * as HighlightableCardRows from "./HighlightableCardRows";
 
-interface Props {
-  cardsGrid?: CardId[][];
-  allFaceDown?: boolean;
-  onAllFaceDown?: () => void;
-  onRowPick: (row: number) => void;
-}
-
-const CARD_SHUFFLE_STAGGER_DELAY = 0.05; // seconds
-type TableStatus = "idle" | "picking" | "shuffle-animating" | "faceDown";
 function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
   const { cardStatuses, setCardStatus, setAllFaceDown } = useCardStatuses(
     _.flatten(cardsGrid)
@@ -106,6 +97,16 @@ function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
     </Wrapper>
   );
 }
+
+interface Props {
+  cardsGrid?: CardId[][];
+  allFaceDown?: boolean;
+  onAllFaceDown?: () => void;
+  onRowPick: (row: number) => void;
+}
+
+const CARD_SHUFFLE_STAGGER_DELAY = 0.05; // seconds
+type TableStatus = "idle" | "picking" | "shuffle-animating" | "faceDown";
 
 const Wrapper = styled(motion.div)`
   display: flex;

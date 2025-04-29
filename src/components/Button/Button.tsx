@@ -24,20 +24,18 @@ export default function Button({
           disabled={disabled}
           variants={{
             hover: {
-              rotateZ: [null, -5, 5],
+              y: -10,
               transition: {
-                repeat: Infinity, // Keep repeating
-                repeatType: "reverse", // Repeat normally (can also use "reverse" for back-and-forth)
-                duration: 2, // Make it smooth
-                ease: "easeInOut",
+                type: "spring",
+                duration: 0.5, // Make it smooth
+                bounce: 0.2,
               },
             },
-            tap: { opacity: 1, scale: 0.95, rotateZ: 0, y: 0 },
-            disabled: { opacity: 0.5, scale: 1, rotateZ: 0, y: 0 },
+            tap: { opacity: 1, scale: 0.95, y: 0 },
+            disabled: { opacity: 0.5, scale: 1, y: 0 },
             enabled: {
               opacity: 1,
               scale: 1,
-              rotateZ: 0,
               y: 0,
               transition: { delay: entryDelay },
             },
@@ -87,8 +85,8 @@ const Wrapper = styled(motion.button)`
   position: relative;
   padding: 0;
   background: none;
-  color: white;
   font-weight: bold;
+  color: inherit;
 `;
 
 const ButtonText = styled.div`
