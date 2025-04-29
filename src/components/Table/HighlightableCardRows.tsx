@@ -11,7 +11,7 @@ export function Root({ canHighlight, children }: RootProps) {
     <HighlightableRowContext.Provider
       value={{ canHighlight, highlightedRowIndex, registerHighlightRow }}
     >
-      <RootWrapper>{children}</RootWrapper>;
+      <RootWrapper>{children}</RootWrapper>
     </HighlightableRowContext.Provider>
   );
 }
