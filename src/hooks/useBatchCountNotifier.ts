@@ -2,15 +2,15 @@ import React from "react";
 
 export default function useBatchCountNotifier<T = void>(
   batchCount: number,
-  onNotify: (incrementData: T) => void
+  onNotify: (countData: T) => void
 ) {
   const counterRef = React.useRef(0);
 
-  function notifiableCount(incrementData: T) {
+  function notifiableCount(countData: T) {
     counterRef.current += 1;
 
     if (counterRef.current === batchCount) {
-      onNotify(incrementData);
+      onNotify(countData);
       counterRef.current = 0;
     }
   }
