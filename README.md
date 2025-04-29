@@ -92,7 +92,6 @@ if (shouldStartAnimation) {
 
 This avoids unnecessary re-renders and makes the code more readable. Side-effects are hard to follow. By avoiding them, we can make the code more predictable.
 
-```
+
 
 [1]: https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
-```
