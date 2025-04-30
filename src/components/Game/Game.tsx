@@ -94,6 +94,7 @@ function Game({ onReset, isResetting }: Props) {
         allFaceDown={gameStatus === "resetting"}
         onAllFaceDown={resetGame}
         onRowPick={handleRowPick}
+        numRowsPicked={numRowsPicked}
       />
       {gameStatus === "completed" && trackedCard && (
         <CardRevealer cardId={trackedCard} onReset={handleResetting} />

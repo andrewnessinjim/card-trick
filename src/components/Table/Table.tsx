@@ -9,7 +9,13 @@ import useBatchCountNotifier from "@/hooks/useBatchCountNotifier";
 import * as HighlightableCardRows from "./HighlightableCardRows";
 import { useInstruction } from "../InstructionProvider";
 
-function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
+function Table({
+  cardsGrid,
+  allFaceDown,
+  onAllFaceDown,
+  onRowPick,
+  numRowsPicked,
+}: Props) {
   const { cardStatuses, setCardStatus, setAllFaceDown } = useCardStatuses(
     _.flatten(cardsGrid)
   );
@@ -40,15 +46,23 @@ function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
 
   function handleRowClick(rowIndex: number) {
     if (tableStatus !== "picking") return;
+    onRowPick(rowIndex);
+
+    //Because this is the last row being picked, no further animation is needed
+    if (numRowsPicked === 2) {
+      setTableStatus("idle");
+      return
+    };
 
     setTableStatus("shuffle-animating");
     setTimeout(() => {
+      console.log("Timeout ");
       setTableStatus("picking");
       showInstruction("Select the row that contains your card now.");
     }, _.flatten(cardsGrid).length * CARD_SHUFFLE_STAGGER_DELAY * 1000 + 1000);
-    onRowPick(rowIndex);
   }
 
+  console.log("tableStatus", tableStatus);
   return (
     <Wrapper>
       <LayoutGroup>
@@ -107,6 +121,7 @@ interface Props {
   allFaceDown?: boolean;
   onAllFaceDown?: () => void;
   onRowPick: (row: number) => void;
+  numRowsPicked: number;
 }
 
 const CARD_SHUFFLE_STAGGER_DELAY = 0.05; // seconds
