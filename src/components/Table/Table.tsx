@@ -7,12 +7,14 @@ import useCardStatuses from "./useCardStatuses";
 import _ from "lodash";
 import useBatchCountNotifier from "@/hooks/useBatchCountNotifier";
 import * as HighlightableCardRows from "./HighlightableCardRows";
+import { useInstruction } from "../InstructionProvider";
 
 function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
   const { cardStatuses, setCardStatus, setAllFaceDown } = useCardStatuses(
     _.flatten(cardsGrid)
   );
   const [tableStatus, setTableStatus] = React.useState<TableStatus>("idle");
+  const { showInstruction } = useInstruction();
 
   if (allFaceDown && tableStatus !== "faceDown") {
     setAllFaceDown();
@@ -22,8 +24,9 @@ function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
   const startPickingIfIdle = React.useCallback(() => {
     if (tableStatus === "idle") {
       setTableStatus("picking");
+      showInstruction("Think of a card and select the row it is in.");
     }
-  }, [tableStatus]);
+  }, [tableStatus, showInstruction]);
 
   const { notifiableCount: countFaceDownNotifiable } = useBatchCountNotifier(
     _.flatten(cardsGrid).length,
@@ -38,9 +41,11 @@ function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
   function handleRowClick(rowIndex: number) {
     if (tableStatus !== "picking") return;
 
+    showInstruction("Shuffling... Please wait.");
     setTableStatus("shuffle-animating");
     setTimeout(() => {
       setTableStatus("picking");
+      showInstruction("Select the row that contains your card now.");
     }, _.flatten(cardsGrid).length * CARD_SHUFFLE_STAGGER_DELAY * 1000 + 1000);
     onRowPick(rowIndex);
   }

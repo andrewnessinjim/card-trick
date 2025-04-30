@@ -10,20 +10,28 @@ import Button from "../Button";
 import DECK_INIT_DATA from "./deckInitData";
 import BlueBack from "@/generated/cards/back-blue-plain";
 import { DEFAULT_CARD_HEIGHT } from "@/constants";
+import { useInstruction } from "../InstructionProvider";
 
-function Deck({
-  onCardsDrawn,
-  showControls,
-  isResetting,
-}: Props) {
+function Deck({ onCardsDrawn, showControls, isResetting }: Props) {
   const [deck, setDeck] = React.useState<Card[]>(DECK_INIT_DATA);
   const [status, setStatus] = React.useState<Status>("idle");
+  const { showInstruction } = useInstruction();
 
   const shuffleDeck = () => {
     const shuffledDeck = [...deck].sort(() => Math.random() - 0.5);
     setDeck(shuffledDeck);
     setStatus("animating-shuffle");
   };
+
+  function handleShuffle() {
+    shuffleDeck();
+    showInstruction("Shuffling... Please wait.");
+  }
+
+  function handleShuffleComplete() {
+    setStatus("idle");
+    showInstruction("Click Start to begin!");
+  }
 
   const animatingShuffle = status === "animating-shuffle";
 
@@ -35,7 +43,7 @@ function Deck({
         </InvisibleCard>
         <WashAnimator.Root
           animate={animatingShuffle}
-          onComplete={() => setStatus("idle")}
+          onComplete={handleShuffleComplete}
         >
           {deck.map((card) => (
             <CardSlot key={card.id}>
@@ -52,7 +60,7 @@ function Deck({
       <ControlsWrapper>
         <Button
           disabled={status === "animating-shuffle"}
-          onClick={() => shuffleDeck()}
+          onClick={handleShuffle}
           show={showControls}
           entryDelay={isResetting ? 1 : 0}
         >
@@ -63,6 +71,7 @@ function Deck({
           onClick={() => {
             setDeck(_.dropRight(deck, 21));
             onCardsDrawn(_.takeRight(deck, 21).map((card) => card.id));
+            showInstruction("Please wait...")
           }}
           show={showControls}
           entryDelay={isResetting ? 1 : 0}

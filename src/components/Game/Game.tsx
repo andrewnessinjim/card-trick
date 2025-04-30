@@ -10,6 +10,8 @@ import useFakeShuffleTracker from "./useFakeShuffleTracker";
 import useTableCards from "./useTableCards";
 import CardRevealer from "../CardRevealer";
 import InstructionBanner from "../InstructionBanner";
+import { useInstruction } from "../InstructionProvider";
+import { CardId } from "../Card";
 
 interface Props {
   onReset: () => void;
@@ -34,59 +36,65 @@ function Game({ onReset, isResetting }: Props) {
 
   const tableCardsGrid = useTableCards(gameStatus, fakeShuffleCardsGrid);
 
+  const { showInstruction } = useInstruction();
+  React.useEffect(() => {
+    if (gameStatus === "idle") {
+      showInstruction("Click Start to begin!");
+    }
+  }, [gameStatus, showInstruction]);
+
   const resetGame = React.useCallback(() => {
     onReset();
   }, [onReset]);
+
+  function handleResetting() {
+    if (gameStatus === "playing" || gameStatus === "completed") {
+      setGameStatus("resetting");
+      showInstruction("Hang on a second...");
+    }
+  }
+
+  function handleRowPick(row: number) {
+    if (gameStatus === "playing") {
+      const nextNumRowsPicked = numRowsPicked + 1;
+      setNumRowsPicked(nextNumRowsPicked);
+      fakeShuffle(row);
+
+      if (nextNumRowsPicked === 3) {
+        setGameStatus("completed");
+        showInstruction("");
+      }
+    }
+  }
+
+  function initiateGame(drawnCards: CardId[]) {
+    setGameStatus("playing");
+    setFakeShuffleCards(drawnCards);
+  }
 
   return (
     <Wrapper>
       <TopPanelWrapper>
         <Deck
           showControls={gameStatus === "idle"}
-          onCardsDrawn={(drawnCards) => {
-            setGameStatus("playing");
-            setFakeShuffleCards(drawnCards);
-          }}
+          onCardsDrawn={initiateGame}
           isResetting={isResetting}
         />
-        <Button
-          onClick={() => {
-            if (gameStatus === "playing" || gameStatus === "completed") {
-              setGameStatus("resetting");
-            }
-          }}
-          animateEntry={!isResetting}
-        >
+        <Button onClick={handleResetting} animateEntry={!isResetting}>
           Reset
         </Button>
       </TopPanelWrapper>
       <Spacer size={16} />
-      <InstructionBanner
-        gameStatus={gameStatus}
-        numRowsPicked={numRowsPicked}
-      />
+      <InstructionBanner />
       <Spacer size={16} />
       <Table
         cardsGrid={tableCardsGrid}
         allFaceDown={gameStatus === "resetting"}
         onAllFaceDown={resetGame}
-        onRowPick={(row) => {
-          if (gameStatus === "playing") {
-            const nextNumRowsPicked = numRowsPicked + 1;
-            setNumRowsPicked(nextNumRowsPicked);
-            fakeShuffle(row);
-
-            if (nextNumRowsPicked === 3) {
-              setGameStatus("completed");
-            }
-          }
-        }}
+        onRowPick={handleRowPick}
       />
       {gameStatus === "completed" && trackedCard && (
-        <CardRevealer
-          cardId={trackedCard}
-          onReset={() => setGameStatus("resetting")}
-        />
+        <CardRevealer cardId={trackedCard} onReset={handleResetting} />
       )}
     </Wrapper>
   );
