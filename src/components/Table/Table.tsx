@@ -41,7 +41,6 @@ function Table({ cardsGrid, allFaceDown, onAllFaceDown, onRowPick }: Props) {
   function handleRowClick(rowIndex: number) {
     if (tableStatus !== "picking") return;
 
-    showInstruction("Shuffling...");
     setTableStatus("shuffle-animating");
     setTimeout(() => {
       setTableStatus("picking");

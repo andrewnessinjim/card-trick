@@ -60,8 +60,11 @@ function Game({ onReset, isResetting }: Props) {
       setNumRowsPicked(nextNumRowsPicked);
       fakeShuffle(row);
 
-      if (nextNumRowsPicked === 3) {
+      const isLastRow = nextNumRowsPicked === 3;
+      if (isLastRow) {
         setGameStatus("completed");
+      } else {
+        showInstruction("Shuffling...");
       }
     }
   }
