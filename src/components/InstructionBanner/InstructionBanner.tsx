@@ -25,7 +25,7 @@ function InstructionBanner({ gameStatus, numRowsPicked }: Props) {
 
   return (
     <Wrapper>
-      <AnimatePresence mode="sync">
+      <AnimatePresence mode="wait">
         <RollingMessage
           key={message}
           initial={{ y: -20, opacity: 0 }}
