@@ -62,7 +62,6 @@ function Game({ onReset, isResetting }: Props) {
 
       if (nextNumRowsPicked === 3) {
         setGameStatus("completed");
-        showInstruction("");
       }
     }
   }

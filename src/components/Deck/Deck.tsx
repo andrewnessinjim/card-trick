@@ -25,7 +25,7 @@ function Deck({ onCardsDrawn, showControls, isResetting }: Props) {
 
   function handleShuffle() {
     shuffleDeck();
-    showInstruction("Shuffling... Please wait.");
+    showInstruction("Shuffling...");
   }
 
   function handleShuffleComplete() {
@@ -71,7 +71,7 @@ function Deck({ onCardsDrawn, showControls, isResetting }: Props) {
           onClick={() => {
             setDeck(_.dropRight(deck, 21));
             onCardsDrawn(_.takeRight(deck, 21).map((card) => card.id));
-            showInstruction("Please wait...")
+            showInstruction("Drawing...")
           }}
           show={showControls}
           entryDelay={isResetting ? 1 : 0}
