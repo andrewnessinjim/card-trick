@@ -56,13 +56,11 @@ function Table({
 
     setTableStatus("shuffle-animating");
     setTimeout(() => {
-      console.log("Timeout ");
       setTableStatus("picking");
       showInstruction("Select the row that contains your card now.");
     }, _.flatten(cardsGrid).length * CARD_SHUFFLE_STAGGER_DELAY * 1000 + 1000);
   }
 
-  console.log("tableStatus", tableStatus);
   return (
     <Wrapper>
       <LayoutGroup>

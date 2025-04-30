@@ -63,7 +63,7 @@ import styled, { css } from "styled-components";
 import { DEFAULT_CARD_HEIGHT } from "@/constants";
 
 export const FLIP_DURATION_SECS = 1.2; // seconds
-console.log("Rendering all cards");
+
 const cardIdMap = {
   C2: <Clubs2 />,
   C3: <Clubs3 />,
