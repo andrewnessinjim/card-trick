@@ -2,52 +2,44 @@ import * as React from "react";
 import styled from "styled-components";
 import { AnimatePresence, motion, MotionProps } from "motion/react";
 import * as Dialog from "@radix-ui/react-dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 import Card, { CardId } from "../Card/Card";
 import Button from "../Button";
 
 function CardRevealer({ cardId, onReset }: Props) {
-  const [showResetButton, setShowResetButton] = React.useState(false);
   const [isExiting, setIsExiting] = React.useState(false);
 
   return (
     <Wrapper>
-      <Dialog.Root open={true}>
+      <Dialog.Root open={true} modal={true}>
         <Dialog.Portal>
-          <Dialog.Overlay asChild forceMount>
+          <Dialog.Overlay forceMount>
             <AnimatePresence>
               {!isExiting && <Overlay {...opacityAnimation} />}
             </AnimatePresence>
           </Dialog.Overlay>
 
-          <Dialog.Content asChild forceMount>
+          <Dialog.Content forceMount>
             <AnimatePresence onExitComplete={onReset}>
               {!isExiting && (
                 <Content {...opacityAnimation}>
                   <Dialog.Title asChild>
                     <Heading>The card you picked was</Heading>
                   </Dialog.Title>
-                  <CardAnimationWrapper
-                    {...scaleBlurRevealAnimation}
-                    onAnimationComplete={() => setShowResetButton(true)}
-                  >
+                  <VisuallyHidden>
+                    <Dialog.Description>
+                      See the card you picked in the center of the screen. Click
+                      the Reset card to play again.
+                    </Dialog.Description>
+                  </VisuallyHidden>
+                  <CardAnimationWrapper {...scaleBlurRevealAnimation}>
                     <Card id={cardId} status="faceUp" height={380} />
                   </CardAnimationWrapper>
-                  <ButtonVisibilityWrapper
-                    animate={{ opacity: showResetButton ? 1 : 0 }}
-                  >
-                    <InvisibleButton initial={{ opacity: 0 }}>
-                      <Button onClick={() => {}}>Reset</Button>
-                    </InvisibleButton>
-                    <VisibleButton>
-                      <Button
-                        onClick={() => setIsExiting(true)}
-                        show={showResetButton}
-                      >
-                        Reset
-                      </Button>
-                    </VisibleButton>
-                  </ButtonVisibilityWrapper>
+
+                  <Button onClick={() => setIsExiting(true)} entryDelay={3}>
+                    Reset
+                  </Button>
                 </Content>
               )}
             </AnimatePresence>
@@ -99,7 +91,7 @@ const opacityAnimation = {
 const Wrapper = styled(motion.div)``;
 
 const Overlay = styled(motion.div)`
-  background: rgba(0, 0, 0, 0.95);
+  background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(10px);
   position: fixed;
   inset: 0;
@@ -118,17 +110,5 @@ const Content = styled(motion.div)`
 const Heading = styled(motion.h1)``;
 
 const CardAnimationWrapper = styled(motion.div)``;
-
-const ButtonVisibilityWrapper = styled(motion.div)`
-  position: relative;
-`;
-const InvisibleButton = styled(motion.div)`
-  opacity: 0;
-`;
-const VisibleButton = styled(motion.div)`
-  position: absolute;
-  top: 0;
-  left: 0;
-`;
 
 export default CardRevealer;
