@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import styled from "styled-components";
 import React from "react";
 import useHighlightedGroupElement from "./useHighlightedGroupElement";
+import { MEDIA_QUERIES } from "@/constants";
 
 export function Root({ canHighlight, children }: RootProps) {
   const [highlightedRowIndex, registerHighlightRow] =
@@ -121,17 +122,32 @@ function rowAnimation(shouldHighlightRow: boolean) {
 }
 
 const RootWrapper = styled(motion.div)`
+  --card-rows-gap: 16px;
+
+  @media ${MEDIA_QUERIES.phoneAndBelow} {
+    --card-rows-gap: 8px;
+  }
+
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--card-rows-gap);
+
+  @media ${MEDIA_QUERIES.phoneAndBelow} {
+    flex-direction: row;
+  }
 `;
 
 const RowWrapper = styled(motion.button)`
   display: flex;
-  gap: 16px;
+  gap: var(--card-rows-gap);
   background-color: transparent;
   border: none;
   cursor: pointer;
+  padding: 0;
+
+  @media ${MEDIA_QUERIES.phoneAndBelow} {
+    flex-direction: column;
+  }
 `;
 
 const JumperWrapper = styled(motion.div)``;

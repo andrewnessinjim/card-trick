@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import BlueBack from "@/generated/cards/back-blue-plain";
 import { AnimatePresence, motion } from "motion/react";
+import { MEDIA_QUERIES } from "@/constants";
 
 export default function Button({
   onClick,
@@ -78,6 +79,9 @@ interface Props {
 const Wrapper = styled(motion.button)`
   display: inline-block;
   height: 136px;
+  @media ${MEDIA_QUERIES.phoneAndBelow} {
+    height: 96px;
+  }
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -95,6 +99,10 @@ const ButtonText = styled.div`
   display: grid;
   place-content: center;
   text-transform: uppercase;
+
+  @media ${MEDIA_QUERIES.phoneAndBelow} {
+    text-transform: capitalize;
+  }
 `;
 
 const CardWrapper = styled.div`

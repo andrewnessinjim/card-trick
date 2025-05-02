@@ -60,7 +60,7 @@ import SpadesAce from "@/generated/cards/sa";
 
 import * as React from "react";
 import styled, { css } from "styled-components";
-import { DEFAULT_CARD_HEIGHT } from "@/constants";
+import { DEFAULT_CARD_HEIGHT_DESKTOP, DEFAULT_CARD_HEIGHT_MOBILE, MEDIA_QUERIES } from "@/constants";
 
 export const FLIP_DURATION_SECS = 1.2; // seconds
 
@@ -171,7 +171,11 @@ const Wrapper = styled(motion.div)`
 
 const Face = css`
   backface-visibility: hidden;
-  height: var(--card-height, ${DEFAULT_CARD_HEIGHT}px);
+  height: var(--card-height, ${DEFAULT_CARD_HEIGHT_DESKTOP}px);
+
+  @media ${MEDIA_QUERIES.phoneAndBelow} {
+    height: var(--card-height, ${DEFAULT_CARD_HEIGHT_MOBILE}px);
+  }
 `;
 
 const FrontFace = styled.div`
