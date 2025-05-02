@@ -1,9 +1,10 @@
 "use client";
 
 import * as React from "react";
+import styled from "styled-components";
+
 import Deck from "../Deck";
 import Table from "../Table";
-import styled from "styled-components";
 import Button from "../Button";
 import Spacer from "../Spacer";
 import useFakeShuffleTracker from "./useFakeShuffleTracker";
@@ -13,17 +14,6 @@ import InstructionBanner from "../InstructionBanner";
 import { useInstruction } from "../InstructionProvider";
 import { CardId } from "../Card";
 
-interface Props {
-  onReset: () => void;
-  isResetting: boolean;
-}
-
-export type GameStatus =
-  | "idle"
-  | "playing"
-  | "resetting"
-  | "completed"
-  | "shuffling";
 function Game({ onReset, isResetting }: Props) {
   const {
     cardsGrid: fakeShuffleCardsGrid,
@@ -113,5 +103,17 @@ const TopPanelWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
+
+interface Props {
+  onReset: () => void;
+  isResetting: boolean;
+}
+
+export type GameStatus =
+  | "idle"
+  | "playing"
+  | "resetting"
+  | "completed"
+  | "shuffling";
 
 export default Game;

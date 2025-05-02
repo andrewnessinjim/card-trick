@@ -1,25 +1,9 @@
-import _ from "lodash";
-import { motion, MotionProps } from "motion/react";
 import React, { ReactElement, ReactNode } from "react";
 import styled from "styled-components";
+import _ from "lodash";
+import { motion, MotionProps } from "motion/react";
+
 import useBatchCountNotifier from "@/hooks/useBatchCountNotifier";
-
-interface RootProps {
-  children: ReactElement<typeof Item>[];
-  onComplete: () => void;
-  animate: boolean;
-}
-
-type Status = "spreading" | "stacking" | "idle" | "washing";
-
-
-
-type WashAnimatorContextType = {
-  status: Status;
-  setStatus: React.Dispatch<React.SetStateAction<Status>>;
-  onComplete: () => void;
-  countAnimatedCard: (latestStatus: Status) => void;
-};
 
 const WashAnimatorContext = React.createContext<WashAnimatorContextType | null>(
   null
@@ -64,10 +48,6 @@ function Root({ children, onComplete, animate }: RootProps) {
       {children}
     </WashAnimatorContext.Provider>
   );
-}
-
-interface ItemProps {
-  children: ReactNode;
 }
 
 function useWashAnimatorContext() {
@@ -159,4 +139,22 @@ function animationSettings(status: Status): MotionProps {
   };
 }
 
+interface RootProps {
+  children: ReactElement<typeof Item>[];
+  onComplete: () => void;
+  animate: boolean;
+}
+
+type Status = "spreading" | "stacking" | "idle" | "washing";
+
+type WashAnimatorContextType = {
+  status: Status;
+  setStatus: React.Dispatch<React.SetStateAction<Status>>;
+  onComplete: () => void;
+  countAnimatedCard: (latestStatus: Status) => void;
+};
+
+interface ItemProps {
+  children: ReactNode;
+}
 export { Root, Item };

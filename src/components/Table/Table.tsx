@@ -1,10 +1,11 @@
 import * as React from "react";
 import styled from "styled-components";
-import Card, { CardId } from "../Card";
 import { LayoutGroup, motion } from "motion/react";
+import _ from "lodash";
+
+import Card, { CardId } from "../Card";
 import DeckTableCardMover from "../DeckTableCardMover";
 import useCardStatuses from "./useCardStatuses";
-import _ from "lodash";
 import useBatchCountNotifier from "@/hooks/useBatchCountNotifier";
 import * as HighlightableCardRows from "./HighlightableCardRows";
 import { useInstruction } from "../InstructionProvider";
@@ -114,16 +115,8 @@ function Table({
   );
 }
 
-interface Props {
-  cardsGrid?: CardId[][];
-  allFaceDown?: boolean;
-  onAllFaceDown?: () => void;
-  onRowPick: (row: number) => void;
-  numRowsPicked: number;
-}
 
 const CARD_SHUFFLE_STAGGER_DELAY = 0.05; // seconds
-type TableStatus = "idle" | "picking" | "shuffle-animating" | "faceDown";
 
 const Wrapper = styled(motion.div)`
   display: flex;
@@ -132,5 +125,15 @@ const Wrapper = styled(motion.div)`
   width: fit-content;
   margin: 0 auto;
 `;
+
+interface Props {
+  cardsGrid?: CardId[][];
+  allFaceDown?: boolean;
+  onAllFaceDown?: () => void;
+  onRowPick: (row: number) => void;
+  numRowsPicked: number;
+}
+
+type TableStatus = "idle" | "picking" | "shuffle-animating" | "faceDown";
 
 export default Table;

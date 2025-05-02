@@ -1,6 +1,7 @@
 import React from "react";
-import { CardId } from "../Card";
 import _ from "lodash";
+
+import { CardId } from "../Card";
 
 interface TrackingCard {
   id: CardId;

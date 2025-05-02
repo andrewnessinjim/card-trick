@@ -2,8 +2,9 @@
 
 import * as React from "react";
 import styled from "styled-components";
-import Game from "../Game";
 import { AnimatePresence, motion } from "motion/react";
+
+import Game from "../Game";
 
 function Resetter() {
   const [resetKey, setResetKey] = React.useState(0);

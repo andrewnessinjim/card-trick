@@ -1,6 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "motion/react";
+
 import { useInstruction } from "../InstructionProvider";
 
 function InstructionBanner() {
@@ -40,4 +41,5 @@ const Wrapper = styled.div`
 `;
 
 const RollingMessage = styled(motion.div)``;
+
 export default InstructionBanner;

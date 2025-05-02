@@ -1,6 +1,7 @@
 import styled from "styled-components";
-import BlueBack from "@/generated/cards/back-blue-plain";
 import { AnimatePresence, motion } from "motion/react";
+
+import BlueBack from "@/generated/cards/back-blue-plain";
 import { MEDIA_QUERIES } from "@/constants";
 
 export default function Button({
@@ -67,15 +68,6 @@ export default function Button({
   );
 }
 
-interface Props {
-  onClick: () => void;
-  children: React.ReactNode;
-  disabled?: boolean;
-  show?: boolean;
-  animateEntry?: boolean;
-  entryDelay?: number;
-}
-
 const Wrapper = styled(motion.button)`
   display: inline-block;
   height: 136px;
@@ -108,3 +100,12 @@ const ButtonText = styled.div`
 const CardWrapper = styled.div`
   height: 100%;
 `;
+
+interface Props {
+  onClick: () => void;
+  children: React.ReactNode;
+  disabled?: boolean;
+  show?: boolean;
+  animateEntry?: boolean;
+  entryDelay?: number;
+}

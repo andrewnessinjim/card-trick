@@ -1,6 +1,7 @@
-import { motion } from "motion/react";
+import React, { ReactElement } from "react";
 import styled from "styled-components";
-import React from "react";
+import { motion } from "motion/react";
+
 import { MEDIA_QUERIES } from "@/constants";
 
 export function Root({ children }: RootProps) {
@@ -37,10 +38,6 @@ export function Row({ children, onClick, canHighlight }: RowProps) {
 }
 
 export function Item({ children }: ItemProps) {
-  return <Jumper>{children}</Jumper>;
-}
-
-function Jumper({ children }: JumperProps) {
   return (
     <JumperWrapper
       transition={{
@@ -58,24 +55,6 @@ function Jumper({ children }: JumperProps) {
       {children}
     </JumperWrapper>
   );
-}
-
-interface RootProps {
-  children: React.ReactNode;
-}
-
-interface RowProps {
-  children: React.ReactNode;
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  canHighlight: boolean;
-}
-
-interface ItemProps {
-  children: React.ReactNode;
-}
-
-interface JumperProps {
-  children: React.ReactNode;
 }
 
 const RootWrapper = styled(motion.div)`
@@ -106,5 +85,19 @@ const RowWrapper = styled(motion.button)`
     flex-direction: column;
   }
 `;
+
+interface RootProps {
+  children?: ReactElement<typeof Row> | ReactElement<typeof Row>[];
+}
+
+interface RowProps {
+  children: React.ReactNode;
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  canHighlight: boolean;
+}
+
+interface ItemProps {
+  children: React.ReactNode;
+}
 
 const JumperWrapper = styled(motion.div)``;

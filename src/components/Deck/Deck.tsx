@@ -80,18 +80,6 @@ function Deck({ onCardsDrawn, showControls, isResetting }: Props) {
   );
 }
 
-export interface Card {
-  id: CardId;
-}
-
-type Status = "idle" | "animating-shuffle";
-
-interface Props {
-  onCardsDrawn: (cards: CardId[]) => void;
-  showControls: boolean;
-  isResetting: boolean;
-}
-
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -119,5 +107,17 @@ const CardSlot = styled(motion.div)`
     left: revert;
   }
 `;
+
+export interface Card {
+  id: CardId;
+}
+
+type Status = "idle" | "animating-shuffle";
+
+interface Props {
+  onCardsDrawn: (cards: CardId[]) => void;
+  showControls: boolean;
+  isResetting: boolean;
+}
 
 export default Deck;

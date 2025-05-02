@@ -54,10 +54,6 @@ function CardRevealer({ cardId, onReset }: Props) {
   );
 }
 
-interface Props {
-  cardId: CardId;
-  onReset: () => void;
-}
 const scaleBlurRevealAnimation: MotionProps = {
   initial: { scale: 0, filter: "blur(25px)" },
   animate: { scale: 1, filter: "blur(0px)" },
@@ -116,5 +112,10 @@ const Heading = styled(motion.h1)``;
 const CardAnimationWrapper = styled(motion.div)`
   --card-height: 380px;
 `;
+
+interface Props {
+  cardId: CardId;
+  onReset: () => void;
+}
 
 export default CardRevealer;

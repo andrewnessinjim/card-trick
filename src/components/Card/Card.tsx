@@ -1,3 +1,5 @@
+import * as React from "react";
+import styled, { css } from "styled-components";
 import { motion } from "motion/react";
 
 import CardBack from "@/generated/cards/back-blue";
@@ -58,9 +60,45 @@ import SpadesQueen from "@/generated/cards/sq";
 import SpadesKing from "@/generated/cards/sk";
 import SpadesAce from "@/generated/cards/sa";
 
-import * as React from "react";
-import styled, { css } from "styled-components";
-import { DEFAULT_CARD_HEIGHT_DESKTOP, DEFAULT_CARD_HEIGHT_MOBILE, MEDIA_QUERIES } from "@/constants";
+import {
+  DEFAULT_CARD_HEIGHT_DESKTOP,
+  DEFAULT_CARD_HEIGHT_MOBILE,
+  MEDIA_QUERIES,
+} from "@/constants";
+
+const RawCard = React.memo(function RawCard({ id }: { id: CardId }) {
+  const cardElement = cardIdMap[id];
+  return cardElement;
+});
+
+function Card({ id, status = "faceDown", onFaceDown, onFaceUp }: Props) {
+  return (
+    <Wrapper
+      initial={status}
+      animate={status}
+      transition={{ type: "spring", duration: FLIP_DURATION_SECS, bounce: 0 }}
+      variants={{
+        faceUp: { rotateY: 0 },
+        faceDown: { rotateY: 180 },
+      }}
+      onAnimationComplete={() => {
+        if (status === "faceDown") {
+          onFaceDown?.();
+        }
+        if (status === "faceUp") {
+          onFaceUp?.();
+        }
+      }}
+    >
+      <FrontFace>
+        <RawCard id={id} />
+      </FrontFace>
+      <BackFace>
+        <CardBack />
+      </BackFace>
+    </Wrapper>
+  );
+}
 
 export const FLIP_DURATION_SECS = 1.2; // seconds
 
@@ -119,50 +157,6 @@ const cardIdMap = {
   SA: <SpadesAce />,
 };
 
-type Status = "faceUp" | "faceDown";
-export type CardId = keyof typeof cardIdMap;
-
-interface Props {
-  id: CardId;
-  status?: Status;
-  onFaceDown?: () => void;
-  onFaceUp?: () => void;
-}
-
-const RawCard = React.memo(function RawCard({ id }: { id: CardId }) {
-  const cardElement = cardIdMap[id];
-  return cardElement;
-});
-
-function Card({ id, status = "faceDown", onFaceDown, onFaceUp }: Props) {
-  return (
-    <Wrapper
-      initial={status}
-      animate={status}
-      transition={{ type: "spring", duration: FLIP_DURATION_SECS, bounce: 0 }}
-      variants={{
-        faceUp: { rotateY: 0 },
-        faceDown: { rotateY: 180 },
-      }}
-      onAnimationComplete={() => {
-        if (status === "faceDown") {
-          onFaceDown?.();
-        }
-        if (status === "faceUp") {
-          onFaceUp?.();
-        }
-      }}
-    >
-      <FrontFace>
-        <RawCard id={id} />
-      </FrontFace>
-      <BackFace>
-        <CardBack />
-      </BackFace>
-    </Wrapper>
-  );
-}
-
 const Wrapper = styled(motion.div)`
   width: fit-content;
   position: relative;
@@ -189,5 +183,15 @@ const BackFace = styled.div`
   ${Face}
   transform: rotateY(180deg);
 `;
+
+type Status = "faceUp" | "faceDown";
+export type CardId = keyof typeof cardIdMap;
+
+interface Props {
+  id: CardId;
+  status?: Status;
+  onFaceDown?: () => void;
+  onFaceUp?: () => void;
+}
 
 export default React.memo(Card);

@@ -1,25 +1,9 @@
-import { motion } from "motion/react";
 import * as React from "react";
 import styled from "styled-components";
-import Card, { CardId } from "../Card";
+import { motion } from "motion/react";
 import _ from "lodash";
 
-type CommonProps = {
-  cardId: CardId;
-  children: React.ReactElement<typeof Card>;
-};
-
-interface DeckProps extends CommonProps {
-  spot: "deck";
-}
-interface TableProps extends CommonProps {
-  spot: "table";
-  order: number;
-  staggerDelay?: number;
-  onMoveComplete?: () => void;
-}
-
-type Props = DeckProps | TableProps;
+import Card, { CardId } from "../Card";
 
 function DeckTableCardMover(props: Props) {
   const { cardId, children, spot } = props;
@@ -51,5 +35,22 @@ function DeckTableCardMover(props: Props) {
 const Wrapper = styled(motion.div)`
   will-change: transform;
 `;
+
+type CommonProps = {
+  cardId: CardId;
+  children: React.ReactElement<typeof Card>;
+};
+
+interface DeckProps extends CommonProps {
+  spot: "deck";
+}
+interface TableProps extends CommonProps {
+  spot: "table";
+  order: number;
+  staggerDelay?: number;
+  onMoveComplete?: () => void;
+}
+
+type Props = DeckProps | TableProps;
 
 export default DeckTableCardMover;
