@@ -34,10 +34,14 @@ function CardRevealer({ cardId, onReset }: Props) {
                     </Dialog.Description>
                   </VisuallyHidden>
                   <CardAnimationWrapper {...scaleBlurRevealAnimation}>
-                    <Card id={cardId} status="faceUp" height={380} />
+                    <Card id={cardId} status="faceUp" />
                   </CardAnimationWrapper>
 
-                  <Button onClick={() => setIsExiting(true)} entryDelay={3}>
+                  <Button
+                    onClick={() => setIsExiting(true)}
+                    entryDelay={3}
+                    animateEntry={true}
+                  >
                     Reset
                   </Button>
                 </Content>
@@ -109,6 +113,8 @@ const Content = styled(motion.div)`
 
 const Heading = styled(motion.h1)``;
 
-const CardAnimationWrapper = styled(motion.div)``;
+const CardAnimationWrapper = styled(motion.div)`
+  --card-height: 380px;
+`;
 
 export default CardRevealer;

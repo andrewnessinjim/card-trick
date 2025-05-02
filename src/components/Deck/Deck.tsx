@@ -39,7 +39,9 @@ function Deck({ onCardsDrawn, showControls, isResetting }: Props) {
     <Wrapper>
       <DeckWrapper>
         <InvisibleCard>
-          <BlueBack height={DEFAULT_CARD_HEIGHT} />
+          <BlueBackWrapper>
+            <BlueBack />
+          </BlueBackWrapper>
         </InvisibleCard>
         <WashAnimator.Root
           animate={animatingShuffle}
@@ -62,6 +64,7 @@ function Deck({ onCardsDrawn, showControls, isResetting }: Props) {
           disabled={status === "animating-shuffle"}
           onClick={handleShuffle}
           show={showControls}
+          animateEntry={true}
           entryDelay={isResetting ? 1 : 0}
         >
           Shuffle
@@ -71,9 +74,10 @@ function Deck({ onCardsDrawn, showControls, isResetting }: Props) {
           onClick={() => {
             setDeck(_.dropRight(deck, 21));
             onCardsDrawn(_.takeRight(deck, 21).map((card) => card.id));
-            showInstruction("Drawing...")
+            showInstruction("Drawing...");
           }}
           show={showControls}
+          animateEntry={true}
           entryDelay={isResetting ? 1 : 0}
         >
           Start
@@ -120,4 +124,9 @@ const CardSlot = styled(motion.div)`
 const InvisibleCard = styled(motion.div)`
   opacity: 0;
 `;
+
+const BlueBackWrapper = styled.div`
+  height: ${DEFAULT_CARD_HEIGHT}px;
+`;
+
 export default Deck;

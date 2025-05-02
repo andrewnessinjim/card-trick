@@ -125,7 +125,6 @@ export type CardId = keyof typeof cardIdMap;
 interface Props {
   id: CardId;
   status?: Status;
-  height?: number;
   onFaceDown?: () => void;
   onFaceUp?: () => void;
 }
@@ -135,20 +134,9 @@ const RawCard = React.memo(function RawCard({ id }: { id: CardId }) {
   return cardElement;
 });
 
-function Card({
-  id,
-  status = "faceDown",
-  onFaceDown,
-  onFaceUp,
-  height = DEFAULT_CARD_HEIGHT,
-}: Props) {
+function Card({ id, status = "faceDown", onFaceDown, onFaceUp }: Props) {
   return (
     <Wrapper
-      style={
-        {
-          "--height": `${height}px`,
-        } as React.CSSProperties
-      }
       initial={status}
       animate={status}
       transition={{ type: "spring", duration: FLIP_DURATION_SECS, bounce: 0 }}
@@ -183,7 +171,7 @@ const Wrapper = styled(motion.div)`
 
 const Face = css`
   backface-visibility: hidden;
-  height: var(--height);
+  height: var(--card-height, ${DEFAULT_CARD_HEIGHT}px);
 `;
 
 const FrontFace = styled.div`
