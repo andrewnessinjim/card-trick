@@ -7,7 +7,7 @@ export default function Button({
   children,
   disabled = false,
   show = true,
-  animateEntry = true,
+  animateEntry = false,
   entryDelay = 0,
 }: Props) {
   return (
