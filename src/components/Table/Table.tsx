@@ -7,6 +7,7 @@ import Card, { CardId, FLIP_DURATION_SECS } from "../Card";
 import DeckTableCardMover from "../DeckTableCardMover";
 import * as HighlightableCardRows from "./HighlightableCardRows";
 import { useInstruction } from "../InstructionProvider";
+import { MEDIA_QUERIES } from "@/constants";
 
 function Table({
   cardsGrid,
@@ -17,6 +18,9 @@ function Table({
 }: Props) {
   const [tableStatus, setTableStatus] = React.useState<TableStatus>("idle");
   const { showInstruction } = useInstruction();
+  const isMobile =
+    window && window.matchMedia(MEDIA_QUERIES.phoneAndBelow).matches;
+  const rowOrCol = isMobile ? "column" : "row";
 
   if (allFaceDown && tableStatus !== "faceDown") {
     setTableStatus("faceDown");
@@ -28,9 +32,10 @@ function Table({
   const startPickingWhenIdle = React.useCallback(() => {
     if (tableStatus === "idle") {
       setTableStatus("picking");
-      showInstruction("Think of a card and select the row it is in.");
+
+      showInstruction(`Think of a card and select the ${rowOrCol} it is in.`);
     }
-  }, [tableStatus, showInstruction]);
+  }, [tableStatus, showInstruction, rowOrCol]);
 
   function handleRowClick(rowIndex: number) {
     if (tableStatus !== "picking") return;
@@ -45,7 +50,7 @@ function Table({
     setTableStatus("shuffle-animating");
     setTimeout(() => {
       setTableStatus("picking");
-      showInstruction("Select the row that contains your card now.");
+      showInstruction(`Select the ${rowOrCol} that contains your card now.`);
     }, _.flatten(cardsGrid).length * CARD_SHUFFLE_STAGGER_DELAY * 1000);
   }
   console.log({ tableStatus });
