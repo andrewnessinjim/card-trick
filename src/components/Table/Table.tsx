@@ -51,8 +51,8 @@ function Table({
     //Because this is the last row being picked, no further animation is needed
     if (numRowsPicked === 2) {
       setTableStatus("idle");
-      return
-    };
+      return;
+    }
 
     setTableStatus("shuffle-animating");
     setTimeout(() => {
@@ -64,19 +64,19 @@ function Table({
   return (
     <Wrapper>
       <LayoutGroup>
-        <HighlightableCardRows.Root canHighlight={tableStatus === "picking"}>
+        <HighlightableCardRows.Root>
           {cardsGrid?.map((cardsRow, rowIndex) => (
             <HighlightableCardRows.Row
               key={rowIndex}
-              order={rowIndex}
               onClick={() => handleRowClick(rowIndex)}
+              canHighlight={tableStatus === "picking"}
             >
               {cardsRow.map((cardId, colIndex) => {
                 const isLastCard =
                   rowIndex === cardsGrid.length - 1 &&
                   colIndex === cardsRow.length - 1;
                 return (
-                  <HighlightableCardRows.Item key={cardId} order={colIndex}>
+                  <HighlightableCardRows.Item key={cardId}>
                     <DeckTableCardMover
                       cardId={cardId}
                       order={rowIndex * cardsRow.length + colIndex}
