@@ -8,8 +8,6 @@ import * as WashAnimator from "./WashAnimator";
 import DeckTableCardMover from "../DeckTableCardMover";
 import Button from "../Button";
 import DECK_INIT_DATA from "./deckInitData";
-import BlueBack from "@/generated/cards/back-blue-plain";
-import { DEFAULT_CARD_HEIGHT } from "@/constants";
 import { useInstruction } from "../InstructionProvider";
 
 function Deck({ onCardsDrawn, showControls, isResetting }: Props) {
@@ -38,11 +36,6 @@ function Deck({ onCardsDrawn, showControls, isResetting }: Props) {
   return (
     <Wrapper>
       <DeckWrapper>
-        <InvisibleCard>
-          <BlueBackWrapper>
-            <BlueBack />
-          </BlueBackWrapper>
-        </InvisibleCard>
         <WashAnimator.Root
           animate={animatingShuffle}
           onComplete={handleShuffleComplete}
@@ -119,14 +112,12 @@ const CardSlot = styled(motion.div)`
   position: absolute;
   top: 0;
   left: 0;
-`;
 
-const InvisibleCard = styled(motion.div)`
-  opacity: 0;
-`;
-
-const BlueBackWrapper = styled.div`
-  height: ${DEFAULT_CARD_HEIGHT}px;
+  &:first-child {
+    position: revert;
+    top: revert;
+    left: revert;
+  }
 `;
 
 export default Deck;
