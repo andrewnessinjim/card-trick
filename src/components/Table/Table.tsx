@@ -2,6 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 import { LayoutGroup, motion } from "motion/react";
 import _ from "lodash";
+import { useMediaQuery } from "react-responsive";
 
 import Card, { CardId, FLIP_DURATION_SECS } from "../Card";
 import DeckTableCardMover from "../DeckTableCardMover";
@@ -18,8 +19,7 @@ function Table({
 }: Props) {
   const [tableStatus, setTableStatus] = React.useState<TableStatus>("idle");
   const { showInstruction } = useInstruction();
-  const isMobile =
-    window && window.matchMedia(MEDIA_QUERIES.phoneAndBelow).matches;
+  const isMobile = useMediaQuery({ query: MEDIA_QUERIES.phoneAndBelow });
   const rowOrCol = isMobile ? "column" : "row";
 
   if (allFaceDown && tableStatus !== "faceDown") {
