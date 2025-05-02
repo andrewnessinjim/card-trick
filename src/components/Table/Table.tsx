@@ -3,10 +3,8 @@ import styled from "styled-components";
 import { LayoutGroup, motion } from "motion/react";
 import _ from "lodash";
 
-import Card, { CardId } from "../Card";
+import Card, { CardId, FLIP_DURATION_SECS } from "../Card";
 import DeckTableCardMover from "../DeckTableCardMover";
-import useCardStatuses from "./useCardStatuses";
-import useBatchCountNotifier from "@/hooks/useBatchCountNotifier";
 import * as HighlightableCardRows from "./HighlightableCardRows";
 import { useInstruction } from "../InstructionProvider";
 
@@ -17,33 +15,22 @@ function Table({
   onRowPick,
   numRowsPicked,
 }: Props) {
-  const { cardStatuses, setCardStatus, setAllFaceDown } = useCardStatuses(
-    _.flatten(cardsGrid)
-  );
   const [tableStatus, setTableStatus] = React.useState<TableStatus>("idle");
   const { showInstruction } = useInstruction();
 
   if (allFaceDown && tableStatus !== "faceDown") {
-    setAllFaceDown();
     setTableStatus("faceDown");
+    setTimeout(() => {
+      onAllFaceDown?.();
+    }, FLIP_DURATION_SECS * 1000);
   }
 
-  const startPickingIfIdle = React.useCallback(() => {
+  const startPickingWhenIdle = React.useCallback(() => {
     if (tableStatus === "idle") {
       setTableStatus("picking");
       showInstruction("Think of a card and select the row it is in.");
     }
   }, [tableStatus, showInstruction]);
-
-  const { notifiableCount: countFaceDownNotifiable } = useBatchCountNotifier(
-    _.flatten(cardsGrid).length,
-    () => onAllFaceDown?.()
-  );
-
-  function trackFaceDownAndNotifyCompletion(cardId: CardId) {
-    setCardStatus(cardId, "faceDown");
-    countFaceDownNotifiable();
-  }
 
   function handleRowClick(rowIndex: number) {
     if (tableStatus !== "picking") return;
@@ -59,9 +46,9 @@ function Table({
     setTimeout(() => {
       setTableStatus("picking");
       showInstruction("Select the row that contains your card now.");
-    }, _.flatten(cardsGrid).length * CARD_SHUFFLE_STAGGER_DELAY * 1000 + 1000);
+    }, _.flatten(cardsGrid).length * CARD_SHUFFLE_STAGGER_DELAY * 1000);
   }
-
+  console.log({ tableStatus });
   return (
     <Wrapper>
       <LayoutGroup>
@@ -76,32 +63,28 @@ function Table({
                 const isLastCard =
                   rowIndex === cardsGrid.length - 1 &&
                   colIndex === cardsRow.length - 1;
+
+                const cardOrder = rowIndex * cardsRow.length + colIndex;
+                const cardEntryStaggerDelay =
+                  cardOrder * STATUS_ENTRY_STAGGER_MAP[tableStatus];
                 return (
                   <HighlightableCardRows.Item key={cardId}>
                     <DeckTableCardMover
                       cardId={cardId}
-                      order={rowIndex * cardsRow.length + colIndex}
-                      staggerDelay={
-                        tableStatus === "picking"
-                          ? CARD_SHUFFLE_STAGGER_DELAY
-                          : undefined
-                      }
+                      entryDelay={cardEntryStaggerDelay}
                       spot="table"
-                      onMoveComplete={() => {
-                        if (tableStatus === "idle") {
-                          setCardStatus(cardId, "faceUp");
-                        }
-                      }}
+                      onMoveComplete={
+                        isLastCard ? startPickingWhenIdle : undefined
+                      }
                     >
                       <Card
                         id={cardId}
-                        status={cardStatuses[cardId]}
-                        onFaceUp={isLastCard ? startPickingIfIdle : undefined}
-                        onFaceDown={
-                          tableStatus === "faceDown"
-                            ? () => trackFaceDownAndNotifyCompletion(cardId)
-                            : undefined
+                        entryDelay={
+                          tableStatus === "idle"
+                            ? cardEntryStaggerDelay + CARD_ENTRY_FLIP_OFFSET
+                            : 0
                         }
+                        status={allFaceDown ? "faceDown" : "faceUp"}
                       />
                     </DeckTableCardMover>
                   </HighlightableCardRows.Item>
@@ -115,8 +98,15 @@ function Table({
   );
 }
 
-
 const CARD_SHUFFLE_STAGGER_DELAY = 0.05; // seconds
+const CARD_ENTRY_FLIP_OFFSET = 0.25; // seconds
+
+const STATUS_ENTRY_STAGGER_MAP: Record<TableStatus, number> = {
+  idle: 0.1,
+  picking: 0,
+  "shuffle-animating": CARD_SHUFFLE_STAGGER_DELAY,
+  faceDown: 0,
+};
 
 const Wrapper = styled(motion.div)`
   display: flex;

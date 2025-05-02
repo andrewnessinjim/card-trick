@@ -71,23 +71,32 @@ const RawCard = React.memo(function RawCard({ id }: { id: CardId }) {
   return cardElement;
 });
 
-function Card({ id, status = "faceDown", onFaceDown, onFaceUp }: Props) {
+function Card({
+  id,
+  status = "faceDown",
+  animateEntry = false,
+  entryDelay = 0,
+}: Props) {
+  function getInitialStatus() {
+    if (animateEntry || entryDelay) {
+      return status === "faceUp" ? "faceDown" : "faceUp";
+    }
+    return status;
+  }
   return (
     <Wrapper
-      initial={status}
+      initial={getInitialStatus()}
       animate={status}
-      transition={{ type: "spring", duration: FLIP_DURATION_SECS, bounce: 0 }}
+      transition={flipTransitionSettings}
       variants={{
-        faceUp: { rotateY: 0 },
+        faceUp: {
+          rotateY: 0,
+          transition: {
+            delay: entryDelay,
+            ...flipTransitionSettings,
+          },
+        },
         faceDown: { rotateY: 180 },
-      }}
-      onAnimationComplete={() => {
-        if (status === "faceDown") {
-          onFaceDown?.();
-        }
-        if (status === "faceUp") {
-          onFaceUp?.();
-        }
       }}
     >
       <FrontFace>
@@ -101,6 +110,12 @@ function Card({ id, status = "faceDown", onFaceDown, onFaceUp }: Props) {
 }
 
 export const FLIP_DURATION_SECS = 1.2; // seconds
+
+const flipTransitionSettings = {
+  type: "spring",
+  duration: FLIP_DURATION_SECS,
+  bounce: 0,
+};
 
 const cardIdMap = {
   C2: <Clubs2 />,
@@ -161,6 +176,7 @@ const Wrapper = styled(motion.div)`
   width: fit-content;
   position: relative;
   transform-style: preserve-3d;
+  will-change: transform;
 `;
 
 const Face = css`
@@ -190,8 +206,8 @@ export type CardId = keyof typeof cardIdMap;
 interface Props {
   id: CardId;
   status?: Status;
-  onFaceDown?: () => void;
-  onFaceUp?: () => void;
+  animateEntry?: boolean;
+  entryDelay?: number;
 }
 
 export default React.memo(Card);

@@ -11,8 +11,8 @@ function DeckTableCardMover(props: Props) {
   let delay = 0;
   let onMoveComplete;
   if (spot === "table") {
-    const { order, staggerDelay = 0.1 } = props;
-    delay = order * staggerDelay;
+    const { entryDelay = 0 } = props;
+    delay = entryDelay;
     onMoveComplete = props.onMoveComplete;
   } else {
     delay = _.random(0, 0.5);
@@ -46,9 +46,8 @@ interface DeckProps extends CommonProps {
 }
 interface TableProps extends CommonProps {
   spot: "table";
-  order: number;
-  staggerDelay?: number;
   onMoveComplete?: () => void;
+  entryDelay?: number;
 }
 
 type Props = DeckProps | TableProps;
