@@ -5,34 +5,53 @@ import { motion } from "motion/react";
 import { MEDIA_QUERIES } from "@/constants";
 import { useMediaQuery } from "react-responsive";
 
+const Context = React.createContext<ContextType | null>(null);
+
 export function Root({ children }: RootProps) {
-  return <RootWrapper>{children}</RootWrapper>;
+  const [tappedRow, setTappedRow] = React.useState<number | null>(null);
+
+  return (
+    <Context.Provider value={{ tappedRow, setTappedRow }}>
+      <RootWrapper>{children}</RootWrapper>
+    </Context.Provider>
+  );
 }
 
-export function Row({ children, onClick, canHighlight }: RowProps) {
+export function useContext() {
+  const context = React.useContext(Context);
+  if (!context) {
+    throw new Error(
+      "useContext must be used within a Context.Provider (HighlightableCardRows)"
+    );
+  }
+  return context;
+}
+
+export function Row({ children, onClick, canHighlight, id }: RowProps) {
   const isTouchDevice = useMediaQuery({ query: "(pointer: coarse)" });
-  const [isTapping, setIsTapping] = React.useState(false);
+
+  const { tappedRow, setTappedRow } = useContext();
+  const isTapping = tappedRow === id;
 
   return (
     <RowWrapper
       onTap={() => {
-        if (isTapping) return;
-
         if (!isTouchDevice) {
           onClick();
           return;
         }
 
-        setIsTapping(true);
+        if (tappedRow !== null) return;
+
+        setTappedRow(id);
         setTimeout(() => {
-          setIsTapping(false);
+          setTappedRow(null);
           onClick();
         }, 450);
       }}
       animate={isTapping ? "highlight" : "normal"}
       whileFocus={canHighlight ? "highlight" : "normal"}
       whileHover={canHighlight ? "highlight" : "normal"}
-      whileTap={canHighlight && isTouchDevice ? "highlight" : "normal"}
       transition={{
         staggerChildren: 0.015,
       }}
@@ -105,6 +124,11 @@ const RowWrapper = styled(motion.button)`
   }
 `;
 
+type ContextType = {
+  tappedRow: number | null;
+  setTappedRow: React.Dispatch<React.SetStateAction<number | null>>;
+};
+
 interface RootProps {
   children?: ReactElement<typeof Row> | ReactElement<typeof Row>[];
 }
@@ -113,6 +137,7 @@ interface RowProps {
   children: React.ReactNode;
   onClick: () => void;
   canHighlight: boolean;
+  id: number;
 }
 
 interface ItemProps {

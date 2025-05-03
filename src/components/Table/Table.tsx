@@ -63,6 +63,7 @@ function Table({
               key={rowIndex}
               onClick={() => handleRowClick(rowIndex)}
               canHighlight={tableStatus === "picking"}
+              id={rowIndex}
             >
               {cardsRow.map((cardId, colIndex) => {
                 const isLastCard =
