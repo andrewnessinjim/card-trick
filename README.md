@@ -4,6 +4,13 @@ You can find the app running [here][6].
 
 This is a remake of my first-ever solo app which I built in 2013 in Java using the Java Swing API. This remake is built using Next.js, React, Motion and TypeScript and it's a work in progress. Along the way, I applied some of the best practices I learned from the [React documentation][2] and the book [A Philosophy of Software Design][3]. I have noted some of the lessons below.
 
+- [Lesson: Choosing Names](#lesson-choosing-names)
+- [Lesson: Reducing Obscurity & Simpler API](#lesson-reducing-obscurity--simpler-api)
+- [Lesson: Avoid Effects As Much As Possible](#lesson-avoid-effects-as-much-as-possible)
+- [Lesson: Information Hiding](#lesson-information-hiding)
+- [Lesson: Avoiding Unnecessary Re-renders](#lesson-avoiding-unnecessary-re-renders)
+- [Usability: Wrong Affordance](#usability-wrong-affordance)
+
 ## Lesson: Choosing Names
 
 | First Instinct                      | Improved Name                                               | Suggestion Applied                       |
@@ -15,6 +22,7 @@ This is a remake of my first-ever solo app which I built in 2013 in Java using t
 ## Lesson: Reducing Obscurity & Simpler API
 
 ### The Bad Way
+
 This is my first version of `TableWashShuffler`:
 
 ```jsx
@@ -23,9 +31,9 @@ This is my first version of `TableWashShuffler`:
   onShufflingAnimationComplete={() => setStatus("idle")}
   keys={deck.map((card) => card.id)}
 >
-  {deck.map((card) => (
-     {/* {...itemToAnimate} */}
-  ))}
+  {deck.map((card) => ({
+    /* {...itemToAnimate} */
+  }))}
 </TableWashShuffler>
 ```
 
@@ -47,6 +55,7 @@ It had 3 problems:
    > — A Philosophy of Software Design by John K. Ousterhout
 
 ### The Better Way
+
 Here is my improved version is:
 
 ```jsx
@@ -99,6 +108,7 @@ This avoids unnecessary re-renders and makes the code more readable.
 ## Lesson: Information Hiding
 
 ### The Bad Way
+
 I initially came-up with this hook for counting cards:
 
 ```jsx
@@ -125,7 +135,8 @@ export default function useCounter(maxCount: number) {
 }
 ```
 
-This is an example of a shallow module; the interface is as complicated as the implementation. 
+This is an example of a shallow module; the interface is as complicated as the implementation.
+
 > "Shallow modules don’t help much in the battle against complexity, because the benefit they provide is negated by the cost of learning and using their interfaces."  
 > — A Philosophy of Software Design by John K. Ousterhout
 
@@ -161,8 +172,18 @@ export default function useBatchCountNotifier<T = void>(
   };
 }
 ```
+
 This hook returns a single function, making the API simpler. It hides the condition used for notifying the consumer, the internal counter, and the reset logic. This is an example of a deep module; the interface is simpler than the implementation. This made the consumer code simpler because it doesn't need to call `reset` or `maxCounted` to do its job, it can pass in its job as a callback and have the hook do the rest.
 
+## Usability: Wrong Affordance
+
+This is was my first version of the initial screen:
+
+![Screenshot showing an information rendered like a button](/docs/usability-wrong-affordance.png "Incorrect Affordance")
+
+I noticed that one of my friends clicked on the text "Click Start to begin!" because it looked like a button. However, my intention was to make it standout so the user notices it first. I used an info icon next to the text and removed the button-like appearance after this observation:
+
+![Screenshot showing information rendered as text next to an icon](/docs/usability-right-affordance.png "Correct Affordance")
 
 [1]: https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
 [2]: https://react.dev/learn
