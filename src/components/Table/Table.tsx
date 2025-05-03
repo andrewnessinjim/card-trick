@@ -53,7 +53,7 @@ function Table({
       showInstruction(`Select the ${rowOrCol} that contains your card now.`);
     }, _.flatten(cardsGrid).length * CARD_SHUFFLE_STAGGER_DELAY * 1000);
   }
-  console.log({ tableStatus });
+
   return (
     <Wrapper>
       <LayoutGroup>
