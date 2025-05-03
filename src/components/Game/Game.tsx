@@ -13,6 +13,21 @@ import CardRevealer from "../CardRevealer";
 import InstructionBanner from "../InstructionBanner";
 import { useInstruction } from "../InstructionProvider";
 import { CardId } from "../Card";
+import { Info } from "lucide-react";
+
+export function StartMessage() {
+  return (
+    <StartMessageWrapper>
+      <Info size={24} />
+      Click Start to begin!
+    </StartMessageWrapper>
+  );
+}
+
+const StartMessageWrapper = styled.div`
+  display: flex;
+  gap: 16px;
+`;
 
 function Game({ onReset, isResetting }: Props) {
   const {
@@ -29,7 +44,7 @@ function Game({ onReset, isResetting }: Props) {
   const { showInstruction } = useInstruction();
   React.useEffect(() => {
     if (gameStatus === "idle") {
-      showInstruction("Click Start to begin!");
+      showInstruction(<StartMessage />);
     }
   }, [gameStatus, showInstruction]);
 

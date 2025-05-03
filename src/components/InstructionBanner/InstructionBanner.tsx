@@ -30,14 +30,17 @@ function InstructionBanner() {
 }
 
 const Wrapper = styled.div`
-  background-color: var(--color-decorative-100);
+  /* background-color: var(--color-decorative-100); */
   padding-top: 8px;
   padding-bottom: 8px;
   border-radius: 4px;
-  border: 1px solid var(--color-decorative-300);
-  text-align: center;
+  /* border: 1px solid var(--color-decorative-300); */
+  /* text-align: center; */
   overflow: hidden;
-  height: 42px;
+  /* height: 42px; */
+  display: flex;
+  gap: 8px;
+  justify-content: center;
 `;
 
 const RollingMessage = styled(motion.div)``;

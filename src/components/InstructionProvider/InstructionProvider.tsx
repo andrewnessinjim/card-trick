@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { ReactNode } from "react";
 
 const InstructionContext = React.createContext<NullableContextType>(null);
 
@@ -18,7 +18,7 @@ function InstructionProvider({ children }: Props) {
   const [instruction, setInstruction] =
     React.useState<NullableInstruction>(null);
 
-  const showInstruction = React.useCallback((instruction: string) => {
+  const showInstruction = React.useCallback((instruction: ReactNode) => {
     setInstruction({ value: instruction, id: crypto.randomUUID() });
   }, []);
 
@@ -35,11 +35,11 @@ interface Props {
 
 interface ContextType {
   instruction: NullableInstruction;
-  showInstruction: (message: string) => void;
+  showInstruction: (message: ReactNode) => void;
 }
 
 interface Instruction {
-  value: string;
+  value: React.ReactNode;
   id: string;
 }
 
