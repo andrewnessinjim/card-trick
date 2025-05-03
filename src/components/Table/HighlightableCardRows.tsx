@@ -3,17 +3,36 @@ import styled from "styled-components";
 import { motion } from "motion/react";
 
 import { MEDIA_QUERIES } from "@/constants";
+import { useMediaQuery } from "react-responsive";
 
 export function Root({ children }: RootProps) {
   return <RootWrapper>{children}</RootWrapper>;
 }
 
 export function Row({ children, onClick, canHighlight }: RowProps) {
+  const isTouchDevice = useMediaQuery({ query: "(pointer: coarse)" });
+  const [isTapping, setIsTapping] = React.useState(false);
+
   return (
     <RowWrapper
-      onClick={onClick}
+      onTap={() => {
+        if (isTapping) return;
+
+        if (!isTouchDevice) {
+          onClick();
+          return;
+        }
+
+        setIsTapping(true);
+        setTimeout(() => {
+          setIsTapping(false);
+          onClick();
+        }, 450);
+      }}
+      animate={isTapping ? "highlight" : "normal"}
       whileFocus={canHighlight ? "highlight" : "normal"}
       whileHover={canHighlight ? "highlight" : "normal"}
+      whileTap={canHighlight && isTouchDevice ? "highlight" : "normal"}
       transition={{
         staggerChildren: 0.015,
       }}
@@ -92,7 +111,7 @@ interface RootProps {
 
 interface RowProps {
   children: React.ReactNode;
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick: () => void;
   canHighlight: boolean;
 }
 
