@@ -29,12 +29,12 @@ function InstructionBanner() {
   );
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled(motion.div)`
   padding-top: 8px;
   padding-bottom: 8px;
   border-radius: 4px;
   overflow: hidden;
-  
+
   display: flex;
   gap: 8px;
   justify-content: center;

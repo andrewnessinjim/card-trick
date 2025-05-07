@@ -14,6 +14,8 @@ import InstructionBanner from "../InstructionBanner";
 import { useInstruction } from "../InstructionProvider";
 import { CardId } from "../Card";
 import { Info } from "lucide-react";
+import { useMediaQuery } from "react-responsive";
+import { MEDIA_QUERIES } from "@/constants";
 
 export function StartMessage() {
   return (
@@ -40,6 +42,7 @@ function Game({ onReset, isResetting }: Props) {
   const [numRowsPicked, setNumRowsPicked] = React.useState(0);
 
   const tableCardsGrid = useTableCards(gameStatus, fakeShuffleCardsGrid);
+  const isMobile = useMediaQuery({ query: MEDIA_QUERIES.phoneAndBelow });
 
   const { showInstruction } = useInstruction();
   React.useEffect(() => {
@@ -79,21 +82,37 @@ function Game({ onReset, isResetting }: Props) {
     setFakeShuffleCards(drawnCards);
   }
 
+  const isIdle = gameStatus === "idle";
+  const isCompactBanner = !isIdle && isMobile;
+
+  const compactInstructionBanner = isCompactBanner && (
+    <CompactInstructionWrapper>
+      <InstructionBanner />
+    </CompactInstructionWrapper>
+  );
+
+  const fullInstructionBanner = !isCompactBanner && (
+    <>
+      <InstructionBanner />
+      <Spacer size={16} />
+    </>
+  );
+
   return (
     <Wrapper>
       <TopPanelWrapper>
         <Deck
-          showControls={gameStatus === "idle"}
+          showControls={isIdle}
           onCardsDrawn={initiateGame}
           isResetting={isResetting}
         />
+        {compactInstructionBanner}
         <Button onClick={handleResetting} animateEntry={!isResetting}>
           Reset
         </Button>
       </TopPanelWrapper>
       <Spacer size={16} />
-      <InstructionBanner />
-      <Spacer size={16} />
+      {fullInstructionBanner}
       <Table
         cardsGrid={tableCardsGrid}
         allFaceDown={gameStatus === "resetting"}
@@ -119,6 +138,9 @@ const TopPanelWrapper = styled.div`
   align-items: center;
 `;
 
+const CompactInstructionWrapper = styled.div`
+  max-width: 190px;
+`;
 interface Props {
   onReset: () => void;
   isResetting: boolean;

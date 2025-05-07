@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import _ from "lodash";
 
 import Card, { CardId } from "../Card";
@@ -24,6 +24,12 @@ function Deck({ onCardsDrawn, showControls, isResetting }: Props) {
   function handleShuffle() {
     shuffleDeck();
     showInstruction("Shuffling...");
+  }
+
+  function drawCards() {
+    setDeck(_.dropRight(deck, 21));
+    onCardsDrawn(_.takeRight(deck, 21).map((card) => card.id));
+    showInstruction("Drawing cards...");
   }
 
   function handleShuffleComplete() {
@@ -52,31 +58,39 @@ function Deck({ onCardsDrawn, showControls, isResetting }: Props) {
         </WashAnimator.Root>
       </DeckWrapper>
 
-      <ControlsWrapper>
-        <Button
-          disabled={status === "animating-shuffle"}
-          onClick={handleShuffle}
-          show={showControls}
-          animateEntry={true}
-          entryDelay={isResetting ? 1 : 0}
-        >
-          Shuffle
-        </Button>
-        <Button
-          disabled={status === "animating-shuffle"}
-          onClick={() => {
-            setDeck(_.dropRight(deck, 21));
-            onCardsDrawn(_.takeRight(deck, 21).map((card) => card.id));
-            showInstruction("Drawing...");
-          }}
-          show={showControls}
-          animateEntry={true}
-          entryDelay={isResetting ? 1 : 0}
-        >
-          Start
-        </Button>
-      </ControlsWrapper>
+      <AnimatePresence mode="popLayout">
+        {showControls && (
+          <ControlsWrapper>
+            <DeckButton
+              isResetting={isResetting}
+              disabled={status === "animating-shuffle"}
+              onClick={handleShuffle}
+            >
+              Shuffle
+            </DeckButton>
+            <DeckButton
+              isResetting={isResetting}
+              disabled={status === "animating-shuffle"}
+              onClick={drawCards}
+            >
+              Start
+            </DeckButton>
+          </ControlsWrapper>
+        )}
+      </AnimatePresence>
     </Wrapper>
+  );
+}
+
+function DeckButton({ show, isResetting, ...delegated }: DeckButtonProps) {
+  return (
+    <Button
+      show={show}
+      animateEntry={true}
+      entryDelay={isResetting ? 1 : 0}
+      popLayoutOnExit={true}
+      {...delegated}
+    />
   );
 }
 
@@ -118,6 +132,11 @@ interface Props {
   onCardsDrawn: (cards: CardId[]) => void;
   showControls: boolean;
   isResetting: boolean;
+}
+
+interface DeckButtonProps extends React.ComponentProps<typeof Button> {
+  show?: boolean;
+  isResetting?: boolean;
 }
 
 export default Deck;

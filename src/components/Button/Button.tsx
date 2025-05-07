@@ -11,9 +11,13 @@ export default function Button({
   show = true,
   animateEntry = false,
   entryDelay = 0,
+  popLayoutOnExit = false,
 }: Props) {
   return (
-    <AnimatePresence>
+    <AnimatePresence
+      mode={popLayoutOnExit ? "popLayout" : undefined}
+      propagate={true}
+    >
       {show && (
         <Wrapper
           onClick={onClick}
@@ -108,4 +112,5 @@ interface Props {
   show?: boolean;
   animateEntry?: boolean;
   entryDelay?: number;
+  popLayoutOnExit?: boolean;
 }
