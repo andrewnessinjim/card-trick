@@ -91,7 +91,7 @@ const randomDelays = _.range(
 function animationSettings(status: Status): MotionProps {
   const [spreadX, spreadY, spreadRotate] = [
     _.random(0, 400),
-    _.random(250, 520),
+    _.random(150, 360),
     _.random(-60, 60),
   ];
   return {
@@ -109,7 +109,7 @@ function animationSettings(status: Status): MotionProps {
           _.random(-180, 180),
           _.random(-60, 60),
         ],
-        y: [null, _.random(200, 620), _.random(200, 620), _.random(300, 400)],
+        y: [null, _.random(200, 520), _.random(200, 520), _.random(300, 400)],
         x: [null, _.random(0, 560), _.random(0, 560), _.random(0, 100)],
         transition: {
           type: "tween",
