@@ -15,7 +15,7 @@ export function useDialogClose(): () => void {
 }
 
 function StyledDialog({
-  visibleHeading,
+  visuallyHiddenHeading,
   visuallyHiddenDescription,
   children,
   onClose,
@@ -33,7 +33,7 @@ function StyledDialog({
     if (safeToClose) {
       setIsClosing(true);
     } else {
-      console.log("Ignoring close")
+      console.log("Ignoring close");
     }
   }
 
@@ -68,10 +68,10 @@ function StyledDialog({
             >
               {!isClosing && (
                 <Content {...opacityAnimation}>
-                  <Dialog.Title asChild>
-                    <Heading>{visibleHeading}</Heading>
-                  </Dialog.Title>
                   <VisuallyHidden>
+                    <Dialog.Title asChild>
+                      <Heading>{visuallyHiddenHeading}</Heading>
+                    </Dialog.Title>
                     <Dialog.Description>
                       {visuallyHiddenDescription}
                     </Dialog.Description>
@@ -111,21 +111,18 @@ const Overlay = styled(motion.div)`
 `;
 
 const Content = styled(motion.div)`
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  gap: 32px;
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
   top: 10%;
 `;
 
-const Heading = styled(motion.h1)``;
+const Heading = styled(motion.h1)`
+  text-align: center;
+`;
 
 interface Props {
-  visibleHeading: string;
+  visuallyHiddenHeading: string;
   visuallyHiddenDescription: string;
   children: React.ReactNode;
   onClose?: () => void;

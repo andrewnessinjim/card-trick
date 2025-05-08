@@ -10,14 +10,17 @@ function CardRevealer({ cardId, onReset }: Props) {
   return (
     <StyledDialog
       onClose={onReset}
-      visibleHeading="The card you picked was"
+      visuallyHiddenHeading="The card you picked was"
       visuallyHiddenDescription="See the card you picked in the center of the screen. Click the Reset card to play again."
     >
-      <CardAnimationWrapper {...scaleBlurRevealAnimation}>
-        <Card id={cardId} status="faceUp" />
-      </CardAnimationWrapper>
+      <Wrapper>
+        <Heading>The card you picked was</Heading>
+        <CardAnimationWrapper {...scaleBlurRevealAnimation}>
+          <Card id={cardId} status="faceUp" />
+        </CardAnimationWrapper>
 
-      <ResetButton />
+        <ResetButton />
+      </Wrapper>
     </StyledDialog>
   );
 }
@@ -50,8 +53,21 @@ const scaleBlurRevealAnimation: MotionProps = {
   },
 };
 
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  width: 340px;
+`;
+
 const CardAnimationWrapper = styled(motion.div)`
   --card-height: 380px;
+`;
+
+const Heading = styled(motion.h1)`
+  text-align: center;
 `;
 
 interface Props {
