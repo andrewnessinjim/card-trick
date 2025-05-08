@@ -3,6 +3,7 @@ import { Macondo } from "next/font/google";
 import "./globals.css";
 import StyledComponentsRegistry from "@/components/StyledComponentsRegistry";
 import { MotionConfig } from "motion/react";
+import { Analytics } from "@vercel/analytics/react";
 
 const macondoSans = Macondo({
   variable: "--font-macondo",
@@ -25,6 +26,7 @@ export default function RootLayout({
       <html lang="en">
         <body className={`${macondoSans.variable}`}>
           <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+          <Analytics />
         </body>
       </html>
     </MotionConfig>
