@@ -19,9 +19,11 @@ function StyledDialog({
   visuallyHiddenDescription,
   children,
   onClose,
+  trigger,
+  initialOpen = false
 }: Props) {
   const [isClosing, setIsClosing] = React.useState(false);
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(initialOpen);
   const [safeToClose, setSafeToClose] = React.useState(false);
 
   React.useEffect(() => {
@@ -52,6 +54,8 @@ function StyledDialog({
           setOpen(open);
         }}
       >
+        {trigger && <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>}
+
         <Dialog.Portal>
           <Dialog.Overlay forceMount>
             <AnimatePresence>
@@ -126,6 +130,8 @@ interface Props {
   visuallyHiddenDescription: string;
   children: React.ReactNode;
   onClose?: () => void;
+  trigger?: React.ReactNode;
+  initialOpen?: boolean;
 }
 
 type DialogContextType = {

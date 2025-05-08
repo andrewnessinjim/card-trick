@@ -1,6 +1,8 @@
 import { AnimatePresence } from "motion/react";
 import Button from "../Button";
 import styled from "styled-components";
+import StyledDialog from "../StyledDialog";
+import About from "../About";
 
 export default function ControlPanel({
   showControls,
@@ -19,9 +21,17 @@ export default function ControlPanel({
           <AnimatingButton disabled={disabled} onClick={onStart}>
             Start
           </AnimatingButton>
-          <AnimatingButton disabled={disabled} onClick={onAbout}>
-            About
-          </AnimatingButton>
+          <StyledDialog
+            trigger={
+              <AnimatingButton disabled={disabled} onClick={onAbout}>
+                About
+              </AnimatingButton>
+            }
+            visuallyHiddenDescription=""
+            visuallyHiddenHeading="About Section"
+          >
+            <About />
+          </StyledDialog>
         </Wrapper>
       )}
     </AnimatePresence>

@@ -12,6 +12,7 @@ function CardRevealer({ cardId, onReset }: Props) {
       onClose={onReset}
       visuallyHiddenHeading="The card you picked was"
       visuallyHiddenDescription="See the card you picked in the center of the screen. Click the Reset card to play again."
+      initialOpen={true}
     >
       <Wrapper>
         <Heading>The card you picked was</Heading>
