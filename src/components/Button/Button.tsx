@@ -16,6 +16,7 @@ export default function Button({
   animateExit = false,
 }: Props) {
   const [stateEntryDelay, setStateEntryDelay] = React.useState(entryDelay);
+  const id = React.useId();
 
   function resetStateEntryDelay(latest: string) {
     // We need to delay entry only on first mount. The first time the state becomes enabled is after the first mount.
@@ -31,6 +32,7 @@ export default function Button({
     >
       {show && (
         <Wrapper
+          key={id + "-button"}
           onAnimationComplete={resetStateEntryDelay}
           onClick={onClick}
           initial={animateEntry ? "exit" : "enabled"}

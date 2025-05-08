@@ -16,7 +16,7 @@ import { Info } from "lucide-react";
 import ControlPanel from "./ControlPanel";
 import useDeck from "../Deck/useDeck";
 
-function Game({ onReset }: Props) {
+function Game({ onReset, isResetting }: Props) {
   const {
     cardsGrid: fakeShuffleCardsGrid,
     setCards: setFakeShuffleCards,
@@ -96,7 +96,13 @@ function Game({ onReset }: Props) {
           onShuffleAnimationComplete={handleShuffleComplete}
         />
         {instructionBanner}
-        <Button onClick={handleResetting}>Reset</Button>
+        <Button
+          onClick={handleResetting}
+          animateEntry={!isResetting}
+          entryDelay={0.5}
+        >
+          Reset
+        </Button>
       </TopPanelWrapper>
       <Spacer size={16} />
       <Table
@@ -114,6 +120,7 @@ function Game({ onReset }: Props) {
         disabled={deckStatus === "animating-shuffle"}
         onShuffle={shuffle}
         onStart={initiateGame}
+        onAbout={() => {}}
       />
     </Wrapper>
   );

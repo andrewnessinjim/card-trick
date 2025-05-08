@@ -6,32 +6,36 @@ export default function ControlPanel({
   showControls,
   onShuffle,
   onStart,
+  onAbout,
   disabled = false,
 }: Props) {
   return (
     <AnimatePresence mode="popLayout">
       {showControls && (
         <Wrapper>
-          <DeckButton disabled={disabled} onClick={onShuffle}>
+          <AnimatingButton disabled={disabled} onClick={onShuffle}>
             Shuffle
-          </DeckButton>
-          <DeckButton disabled={disabled} onClick={onStart}>
+          </AnimatingButton>
+          <AnimatingButton disabled={disabled} onClick={onStart}>
             Start
-          </DeckButton>
+          </AnimatingButton>
+          <AnimatingButton disabled={disabled} onClick={onAbout}>
+            About
+          </AnimatingButton>
         </Wrapper>
       )}
     </AnimatePresence>
   );
 }
 
-function DeckButton({ show, ...delegated }: DeckButtonProps) {
+function AnimatingButton({ show, ...delegated }: DeckButtonProps) {
   return (
     <Button
       show={show}
       animateExit={true}
       popLayoutOnExit={true}
       animateEntry={true}
-      entryDelay={1}
+      entryDelay={0.5}
       {...delegated}
     />
   );
@@ -55,7 +59,8 @@ interface DeckButtonProps extends React.ComponentProps<typeof Button> {
 
 interface Props {
   showControls: boolean;
+  disabled?: boolean;
   onShuffle: () => void;
   onStart: () => void;
-  disabled?: boolean;
+  onAbout: () => void;
 }
