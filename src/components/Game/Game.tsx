@@ -12,22 +12,9 @@ import useTableCards from "./useTableCards";
 import CardRevealer from "../CardRevealer";
 import InstructionBanner from "../InstructionBanner";
 import { useInstruction } from "../InstructionProvider";
-import { CardId } from "../Card";
 import { Info } from "lucide-react";
-
-export function StartMessage() {
-  return (
-    <StartMessageWrapper>
-      <Info size={24} />
-      Click Start to begin!
-    </StartMessageWrapper>
-  );
-}
-
-const StartMessageWrapper = styled.div`
-  display: flex;
-  gap: 16px;
-`;
+import ControlPanel from "./ControlPanel";
+import useDeck from "../Deck/useDeck";
 
 function Game({ onReset }: Props) {
   const {
@@ -36,6 +23,14 @@ function Game({ onReset }: Props) {
     fakeShuffle,
     trackedCard,
   } = useFakeShuffleTracker();
+
+  const {
+    deck,
+    status: deckStatus,
+    shuffle,
+    drawCards,
+    markShuffleComplete,
+  } = useDeck();
   const [gameStatus, setGameStatus] = React.useState<GameStatus>("idle");
   const [numRowsPicked, setNumRowsPicked] = React.useState(0);
 
@@ -74,9 +69,14 @@ function Game({ onReset }: Props) {
     }
   }
 
-  function initiateGame(drawnCards: CardId[]) {
+  function initiateGame() {
     setGameStatus("playing");
-    setFakeShuffleCards(drawnCards);
+    setFakeShuffleCards(drawCards());
+  }
+
+  function handleShuffleComplete() {
+    markShuffleComplete();
+    showInstruction("Click Start to begin!");
   }
 
   const isIdle = gameStatus === "idle";
@@ -90,7 +90,11 @@ function Game({ onReset }: Props) {
   return (
     <Wrapper>
       <TopPanelWrapper>
-        <Deck showControls={isIdle} onCardsDrawn={initiateGame} />
+        <Deck
+          deck={deck}
+          status={deckStatus}
+          onShuffleAnimationComplete={handleShuffleComplete}
+        />
         {instructionBanner}
         <Button onClick={handleResetting}>Reset</Button>
       </TopPanelWrapper>
@@ -105,6 +109,12 @@ function Game({ onReset }: Props) {
       {gameStatus === "completed" && trackedCard && (
         <CardRevealer cardId={trackedCard} onReset={handleResetting} />
       )}
+      <ControlPanel
+        showControls={isIdle}
+        disabled={deckStatus === "animating-shuffle"}
+        onShuffle={shuffle}
+        onStart={initiateGame}
+      />
     </Wrapper>
   );
 }
@@ -124,6 +134,21 @@ const TopPanelWrapper = styled.div`
 const InstructionWrapper = styled.div`
   flex-shrink: 9999;
 `;
+
+export function StartMessage() {
+  return (
+    <StartMessageWrapper>
+      <Info size={24} />
+      Click Start to begin!
+    </StartMessageWrapper>
+  );
+}
+
+const StartMessageWrapper = styled.div`
+  display: flex;
+  gap: 16px;
+`;
+
 interface Props {
   onReset: () => void;
   isResetting?: boolean;
