@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 
 import BlueBack from "@/generated/cards/back-blue-plain";
 import { MEDIA_QUERIES } from "@/constants";
+import React from "react";
 
 export default function Button({
   onClick,
@@ -12,7 +13,17 @@ export default function Button({
   animateEntry = false,
   entryDelay = 0,
   popLayoutOnExit = false,
+  animateExit = false,
 }: Props) {
+  const [stateEntryDelay, setStateEntryDelay] = React.useState(entryDelay);
+
+  function resetStateEntryDelay(latest: string) {
+    // We need to delay entry only on first mount. The first time the state becomes enabled is after the first mount.
+    if (latest === "enabled" && stateEntryDelay !== 0) {
+      setStateEntryDelay(0);
+    }
+  }
+
   return (
     <AnimatePresence
       mode={popLayoutOnExit ? "popLayout" : undefined}
@@ -20,13 +31,14 @@ export default function Button({
     >
       {show && (
         <Wrapper
+          onAnimationComplete={resetStateEntryDelay}
           onClick={onClick}
           initial={animateEntry ? "exit" : "enabled"}
           animate={disabled ? "disabled" : "enabled"}
           whileHover={disabled ? "disabled" : "hover"}
           whileFocus={disabled ? "disabled" : "hover"}
           whileTap={disabled ? "disabled" : "tap"}
-          exit={"exit"}
+          exit={animateExit ? "exit" : undefined}
           disabled={disabled}
           variants={{
             hover: {
@@ -43,16 +55,16 @@ export default function Button({
               opacity: 1,
               scale: 1,
               y: 0,
-              transition: { delay: entryDelay },
+              transition: { delay: stateEntryDelay },
             },
             exit: {
               opacity: 0,
-              scale: 1,
-              y: -200,
+              scale: 0.95,
+              y: +200,
               transition: {
                 type: "spring",
                 duration: 0.5,
-                bounce: 0.2,
+                bounce: 0,
               },
             },
           }}
@@ -111,6 +123,7 @@ interface Props {
   disabled?: boolean;
   show?: boolean;
   animateEntry?: boolean;
+  animateExit?: boolean;
   entryDelay?: number;
   popLayoutOnExit?: boolean;
 }

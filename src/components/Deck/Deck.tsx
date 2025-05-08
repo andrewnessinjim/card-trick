@@ -10,9 +10,9 @@ import Button from "../Button";
 import DECK_INIT_DATA from "./deckInitData";
 import { useInstruction } from "../InstructionProvider";
 
-function Deck({ onCardsDrawn, showControls, isResetting }: Props) {
+function Deck({ onCardsDrawn, showControls }: Props) {
   const [deck, setDeck] = React.useState<Card[]>(DECK_INIT_DATA);
-  const [status, setStatus] = React.useState<Status>("idle");
+  const [status, setStatus] = React.useState<DeckStatus>("idle");
   const { showInstruction } = useInstruction();
 
   const shuffleDeck = () => {
@@ -62,14 +62,12 @@ function Deck({ onCardsDrawn, showControls, isResetting }: Props) {
         {showControls && (
           <ControlsWrapper>
             <DeckButton
-              isResetting={isResetting}
               disabled={status === "animating-shuffle"}
               onClick={handleShuffle}
             >
               Shuffle
             </DeckButton>
             <DeckButton
-              isResetting={isResetting}
               disabled={status === "animating-shuffle"}
               onClick={drawCards}
             >
@@ -82,13 +80,14 @@ function Deck({ onCardsDrawn, showControls, isResetting }: Props) {
   );
 }
 
-function DeckButton({ show, isResetting, ...delegated }: DeckButtonProps) {
+function DeckButton({ show, ...delegated }: DeckButtonProps) {
   return (
     <Button
       show={show}
-      animateEntry={true}
-      entryDelay={isResetting ? 1 : 0}
+      animateExit={true}
       popLayoutOnExit={true}
+      animateEntry={true}
+      entryDelay={1}
       {...delegated}
     />
   );
@@ -104,6 +103,12 @@ const Wrapper = styled.div`
 const ControlsWrapper = styled.div`
   display: flex;
   gap: 16px;
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  overflow: hidden;
+  padding-top: 32px;
 `;
 
 const DeckWrapper = styled.div`
@@ -126,12 +131,11 @@ export interface Card {
   id: CardId;
 }
 
-type Status = "idle" | "animating-shuffle";
+type DeckStatus = "idle" | "animating-shuffle";
 
 interface Props {
   onCardsDrawn: (cards: CardId[]) => void;
   showControls: boolean;
-  isResetting: boolean;
 }
 
 interface DeckButtonProps extends React.ComponentProps<typeof Button> {

@@ -14,8 +14,6 @@ import InstructionBanner from "../InstructionBanner";
 import { useInstruction } from "../InstructionProvider";
 import { CardId } from "../Card";
 import { Info } from "lucide-react";
-import { useMediaQuery } from "react-responsive";
-import { MEDIA_QUERIES } from "@/constants";
 
 export function StartMessage() {
   return (
@@ -31,7 +29,7 @@ const StartMessageWrapper = styled.div`
   gap: 16px;
 `;
 
-function Game({ onReset, isResetting }: Props) {
+function Game({ onReset }: Props) {
   const {
     cardsGrid: fakeShuffleCardsGrid,
     setCards: setFakeShuffleCards,
@@ -42,7 +40,6 @@ function Game({ onReset, isResetting }: Props) {
   const [numRowsPicked, setNumRowsPicked] = React.useState(0);
 
   const tableCardsGrid = useTableCards(gameStatus, fakeShuffleCardsGrid);
-  const isMobile = useMediaQuery({ query: MEDIA_QUERIES.phoneAndBelow });
 
   const { showInstruction } = useInstruction();
   React.useEffect(() => {
@@ -83,36 +80,21 @@ function Game({ onReset, isResetting }: Props) {
   }
 
   const isIdle = gameStatus === "idle";
-  const isCompactBanner = !isIdle && isMobile;
 
-  const compactInstructionBanner = isCompactBanner && (
-    <CompactInstructionWrapper>
+  const instructionBanner = (
+    <InstructionWrapper>
       <InstructionBanner />
-    </CompactInstructionWrapper>
-  );
-
-  const fullInstructionBanner = !isCompactBanner && (
-    <>
-      <InstructionBanner />
-      <Spacer size={16} />
-    </>
+    </InstructionWrapper>
   );
 
   return (
     <Wrapper>
       <TopPanelWrapper>
-        <Deck
-          showControls={isIdle}
-          onCardsDrawn={initiateGame}
-          isResetting={isResetting}
-        />
-        {compactInstructionBanner}
-        <Button onClick={handleResetting} animateEntry={!isResetting}>
-          Reset
-        </Button>
+        <Deck showControls={isIdle} onCardsDrawn={initiateGame} />
+        {instructionBanner}
+        <Button onClick={handleResetting}>Reset</Button>
       </TopPanelWrapper>
       <Spacer size={16} />
-      {fullInstructionBanner}
       <Table
         cardsGrid={tableCardsGrid}
         allFaceDown={gameStatus === "resetting"}
@@ -136,14 +118,15 @@ const TopPanelWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
 `;
 
-const CompactInstructionWrapper = styled.div`
-  max-width: 190px;
+const InstructionWrapper = styled.div`
+  flex-shrink: 9999;
 `;
 interface Props {
   onReset: () => void;
-  isResetting: boolean;
+  isResetting?: boolean;
 }
 
 export type GameStatus =
