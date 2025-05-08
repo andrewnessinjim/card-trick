@@ -40,6 +40,8 @@ const Wrapper = styled(motion.div)`
   justify-content: center;
 `;
 
-const RollingMessage = styled(motion.div)``;
+const RollingMessage = styled(motion.div)`
+  text-align: center;
+`;
 
 export default InstructionBanner;
