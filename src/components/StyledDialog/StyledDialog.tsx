@@ -115,6 +115,7 @@ const DialogClose = styled(Dialog.Close)`
 const CloseButton = styled(motion.button)`
   background: none;
   border: none;
+  cursor: pointer;
 `;
 
 const Content = styled(motion.div)`
