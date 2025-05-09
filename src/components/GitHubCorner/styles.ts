@@ -18,7 +18,6 @@ export const Wrapper = styled.a`
   top: 0;
   right: 0;
   border: 0;
-  z-index: 1000;
 
   &:hover ${OctoArm} {
     animation: ${octocatWave} 560ms ease-in-out;
