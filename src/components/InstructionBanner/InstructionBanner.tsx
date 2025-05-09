@@ -11,7 +11,7 @@ function InstructionBanner() {
   const instructionKey = instruction?.id ?? "";
 
   return (
-    <Wrapper>
+    <Wrapper aria-live="polite">
       <AnimatePresence mode="wait">
         <RollingMessage
           key={instructionKey}

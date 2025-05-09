@@ -10,18 +10,37 @@ function About() {
       <Section>
         <Heading>🌱 My First App</Heading>
         <Text>
-          This is a remake of the app I built {year - 2013}{" "}
-          years ago with the Java Swing API. It was the project that made me realize, “This is fun—and I can do this.” This remake is built using
-          Next.js, React, Motion, RadixUI and TypeScript.
+          This is a remake of the app I built {year - 2013} years ago with the
+          Java Swing API. It was the project that made me realize, “This is
+          fun—and I can do this.” This remake is built using Next.js, React,
+          Motion, RadixUI and TypeScript.
+        </Text>
+      </Section>
+
+      <Section>
+        <Heading>🤝 Learn With Me</Heading>
+        <Text>
+          I offer one-to-one tutoring for beginners on web development. You can
+          either book a free 15-min session on{" "}
+          <SecureLink href="https://calendly.com/andrewnessindev/30min">
+            Calendly
+          </SecureLink>{" "}
+          to see if I am the right person to help you or use{" "}
+          <SecureLink href="https://preply.com/en/tutor/6274742?pref=MTk4NjM5NTk=&id=1746711792.284879&ep=">
+            my referral link
+          </SecureLink>{" "}
+          to book a session with me or other tutors on Preply🙌.
         </Text>
       </Section>
 
       <Section>
         <Heading>🎓 Course Inspiration</Heading>
         <Text>
-          <strong>Josh W Comeau&apos;s</strong> courses helped me build a strong
-          foundation for the techniques used in this app. I recommend checking
-          them out{" "}
+          <SecureLink href="https://www.joshwcomeau.com/courses/">
+            Josh W Comeau&apos;s courses
+          </SecureLink>{" "}
+          helped me build a strong foundation for the techniques used in this
+          app. I recommend checking them out{" "}
           <SecureLink href="https://www.joshwcomeau.com/courses/">
             here
           </SecureLink>{" "}
@@ -29,17 +48,6 @@ function About() {
         </Text>
       </Section>
 
-      <Section>
-        <Heading>🤝 Learn With Me</Heading>
-        <Text>
-          If you&apos;d like to improve your web development skills with
-          personalized help, I also tutor on Preply. Use{" "}
-          <SecureLink href="https://preply.com/en/tutor/6274742?pref=MTk4NjM5NTk=&id=1746711792.284879&ep=">
-            my referral link
-          </SecureLink>{" "}
-          to book a session with me or other tutors 🙌.
-        </Text>
-      </Section>
       <Section>
         <Heading>🎴 Credits</Heading>
         <Text>
@@ -68,9 +76,8 @@ function SecureLink({ href, children }: { href: string; children: string }) {
 
 const Wrapper = styled.div`
   padding: 2rem;
-  /* width: 480px; */
   width: 90vw;
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -97,6 +104,7 @@ const Text = styled.p`
   font-size: 1.25rem;
   line-height: 1.6;
   text-align: center;
+  margin-bottom: 1.25rem;
 `;
 
 const StyledLink = styled(Link)`
