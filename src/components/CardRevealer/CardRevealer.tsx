@@ -4,15 +4,15 @@ import { motion, MotionProps } from "motion/react";
 
 import Card, { CardId } from "../Card/Card";
 import Button from "../Button";
-import StyledDialog, { useDialogClose } from "../StyledDialog";
+import StyledDialog from "../StyledDialog";
 
 function CardRevealer({ cardId, onReset }: Props) {
   return (
     <StyledDialog
-      onClose={onReset}
       visuallyHiddenHeading="The card you picked was"
       visuallyHiddenDescription="See the card you picked in the center of the screen. Click the Reset card to play again."
       initialOpen={true}
+      onClose={onReset}
     >
       <Wrapper>
         <Heading>The card you picked was</Heading>
@@ -20,19 +20,11 @@ function CardRevealer({ cardId, onReset }: Props) {
           <Card id={cardId} status="faceUp" />
         </CardAnimationWrapper>
 
-        <ResetButton />
+        <Button onClick={onReset} entryDelay={3} animateEntry={true}>
+          Reset
+        </Button>
       </Wrapper>
     </StyledDialog>
-  );
-}
-
-function ResetButton() {
-  const close = useDialogClose();
-
-  return (
-    <Button onClick={close} entryDelay={3} animateEntry={true}>
-      Reset
-    </Button>
   );
 }
 

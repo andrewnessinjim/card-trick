@@ -83,10 +83,9 @@ body {
   --color-card-back-light: hsl(218, 100%, 37%);
   background-color: var(--color-decorative-200);
   color: var(--color-text);
-}
-
-body {
   font-family: var(--font-macondo), sans-serif;
+
+  isolation: isolate;
 }
 
 html,

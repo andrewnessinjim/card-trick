@@ -29,6 +29,7 @@ export default function ControlPanel({
             }
             visuallyHiddenDescription=""
             visuallyHiddenHeading="About Section"
+            overflowY="auto"
           >
             <About />
           </StyledDialog>

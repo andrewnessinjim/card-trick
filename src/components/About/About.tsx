@@ -1,3 +1,4 @@
+import { MEDIA_QUERIES } from "@/constants";
 import Link from "next/link";
 import * as React from "react";
 import styled from "styled-components";
@@ -12,20 +13,6 @@ function About() {
           This is a remake of the first-ever solo app I built {year - 2013}{" "}
           years ago with the Java Swing API. This remake is built using Next.js,
           React, Motion, RadixUI and TypeScript.
-        </Text>
-      </Section>
-      <Section>
-        <Heading>🎴 Credits</Heading>
-        <Text>
-          The beautiful card illustrations are from{" "}
-          <SecureLink href="https://creazilla.com/media/clipart/74791/king-of-hearts">
-            Creazilla
-          </SecureLink>
-          . Thanks to{" "}
-          <SecureLink href="https://www.linkedin.com/in/praveen-prabhu-215392180/">
-            Praveen
-          </SecureLink>{" "}
-          for surprising me with this trick years ago. 🫨
         </Text>
       </Section>
 
@@ -53,6 +40,20 @@ function About() {
           to book a session with me or other tutors 🙌.
         </Text>
       </Section>
+      <Section>
+        <Heading>🎴 Credits</Heading>
+        <Text>
+          The beautiful card illustrations are from{" "}
+          <SecureLink href="https://creazilla.com/media/clipart/74791/king-of-hearts">
+            Creazilla
+          </SecureLink>
+          . Thanks to{" "}
+          <SecureLink href="https://www.linkedin.com/in/praveen-prabhu-215392180/">
+            Praveen
+          </SecureLink>{" "}
+          for surprising me with this trick years ago. 🫨
+        </Text>
+      </Section>
     </Wrapper>
   );
 }
@@ -67,13 +68,24 @@ function SecureLink({ href, children }: { href: string; children: string }) {
 
 const Wrapper = styled.div`
   padding: 2rem;
-  width: 480px;
-  max-width: 90%;
+  /* width: 480px; */
+  width: 90vw;
+  max-width: 800px;
   margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+
+  @media ${MEDIA_QUERIES.phoneAndBelow} {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const Section = styled.section`
-  margin-bottom: 3rem;
+  /* margin-bottom: 2rem; */
+  &:last-child {
+    margin-bottom: 0;
+  }
 `;
 
 const Heading = styled.h2`
