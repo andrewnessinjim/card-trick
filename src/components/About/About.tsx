@@ -8,11 +8,11 @@ function About() {
   return (
     <Wrapper>
       <Section>
-        <Heading>♠️ The One That Started It All</Heading>
+        <Heading>🌱 My First App</Heading>
         <Text>
-          This is a remake of the first-ever solo app I built {year - 2013}{" "}
-          years ago with the Java Swing API. This remake is built using Next.js,
-          React, Motion, RadixUI and TypeScript.
+          This is a remake of the app I built {year - 2013}{" "}
+          years ago with the Java Swing API. It was the project that made me realize, “This is fun—and I can do this.” This remake is built using
+          Next.js, React, Motion, RadixUI and TypeScript.
         </Text>
       </Section>
 
@@ -82,7 +82,6 @@ const Wrapper = styled.div`
 `;
 
 const Section = styled.section`
-  /* margin-bottom: 2rem; */
   &:last-child {
     margin-bottom: 0;
   }
