@@ -52,7 +52,8 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 32px;
-  width: 340px;
+  width: min(400px, 90vw);
+  padding: 32px;
 `;
 
 const CardAnimationWrapper = styled(motion.div)`

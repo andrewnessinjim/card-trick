@@ -74,7 +74,7 @@ function StyledDialog({
           <DialogClose asChild>
             <CloseButton {...opacityAnimation}>
               <VisuallyHidden>Close</VisuallyHidden>
-              <X size={32} color="white" />
+              <X size={32} color="black" />
             </CloseButton>
           </DialogClose>
         </Dialog.Content>
@@ -100,8 +100,8 @@ const opacityAnimation = {
 };
 
 const Overlay = styled(motion.div)`
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(10px);
+  background: rgba(180, 180, 180, 0.8);
+  backdrop-filter: blur(3px);
   position: fixed;
   inset: 0;
 `;
@@ -124,6 +124,8 @@ const Content = styled(motion.div)`
   top: 10%;
   overflow-y: var(--overflowY);
   max-height: 80vh;
+  background: var(--color-decorative-100);
+  border-radius: 8px;
 `;
 
 const Heading = styled(motion.h1)`
