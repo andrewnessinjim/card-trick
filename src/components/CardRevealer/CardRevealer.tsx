@@ -57,7 +57,7 @@ const Wrapper = styled.div`
 `;
 
 const CardAnimationWrapper = styled(motion.div)`
-  --card-height: 380px;
+  --card-height: 300px;
 `;
 
 const Heading = styled(motion.h1)`
