@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import { Macondo } from "next/font/google";
+import { Quicksand } from "next/font/google";
 import "./globals.css";
 import StyledComponentsRegistry from "@/components/StyledComponentsRegistry";
 import { MotionConfig } from "motion/react";
 import { Analytics } from "@vercel/analytics/react";
 
-const macondoSans = Macondo({
-  variable: "--font-macondo",
+const macondoSans = Quicksand({
+  variable: "--font-quicksand",
   subsets: ["latin"],
-  weight: "400",
+  weight: "variable",
 });
 
 export const metadata: Metadata = {
