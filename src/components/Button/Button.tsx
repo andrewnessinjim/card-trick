@@ -88,10 +88,6 @@ export default function Button({
 
 const Wrapper = styled(motion.button)`
   display: inline-block;
-  height: 136px;
-  @media ${MEDIA_QUERIES.phoneAndBelow} {
-    height: 96px;
-  }
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -116,7 +112,10 @@ const ButtonText = styled.div`
 `;
 
 const CardWrapper = styled.div`
-  height: 100%;
+  height: 136px;
+  @media ${MEDIA_QUERIES.phoneAndBelow} {
+    height: 108px;
+  }
 `;
 
 interface Props {

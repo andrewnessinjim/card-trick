@@ -60,6 +60,10 @@ const Wrapper = styled.div`
   left: 50%;
   transform: translateX(-50%);
   overflow: hidden;
+  width: 100%;
+  justify-content: center;
+
+  /* Room for animation when cards slide in*/
   padding-top: 32px;
 `;
 
