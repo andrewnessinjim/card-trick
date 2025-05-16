@@ -94,13 +94,13 @@ const opacityAnimation = {
     opacity: 1,
   },
   transition: {
-    duration: 0.15,
+    duration: 0.2,
     ease: "easeInOut",
   },
 };
 
 const Overlay = styled(motion.div)`
-  background: rgba(180, 180, 180, 0.8);
+  background: rgba(38, 38, 38, 0.95);
   backdrop-filter: blur(3px);
   position: fixed;
   inset: 0;
