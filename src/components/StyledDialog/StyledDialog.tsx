@@ -74,7 +74,7 @@ function StyledDialog({
           <DialogClose asChild>
             <CloseButton {...opacityAnimation}>
               <VisuallyHidden>Close</VisuallyHidden>
-              <X size={32} color="black" />
+              <X size={32} color="white" />
             </CloseButton>
           </DialogClose>
         </Dialog.Content>
