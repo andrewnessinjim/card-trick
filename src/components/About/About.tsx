@@ -18,17 +18,6 @@ function About() {
       </Section>
 
       <Section>
-        <Heading>🤝 Learn With Me</Heading>
-        <Text>
-          I offer one-to-one tutoring for beginners on web development. You can use{" "}
-          <SecureLink href="https://preply.com/en/tutor/6274742?pref=MTk4NjM5NTk=&id=1746711792.284879&ep=">
-            my referral link
-          </SecureLink>{" "}
-          to book a session with me or other tutors on Preply🙌.
-        </Text>
-      </Section>
-
-      <Section>
         <Heading>🎓 Course Inspiration</Heading>
         <Text>
           <SecureLink href="https://www.joshwcomeau.com/courses/">
