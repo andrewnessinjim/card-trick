@@ -1,4 +1,4 @@
-# Information Hiding
+# Lesson: Information Hiding (Custom Hook)
 
 ## A Bad Approach
 

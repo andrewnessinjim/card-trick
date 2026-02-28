@@ -1,4 +1,4 @@
-# Shallow Modules
+# Lesson: Avoid Shallow Modules (useImperativeHandle)
 
 I initially wrote this hook that exposed 5 properties:
 

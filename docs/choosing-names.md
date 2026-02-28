@@ -1,4 +1,4 @@
-## Lesson: Choosing Names
+# Lesson: Choosing Names
 
 A few examples of how I improved variable names in my code:
 

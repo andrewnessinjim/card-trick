@@ -1,4 +1,4 @@
-# Avoid Effects As Much As Possible
+# Lesson: Avoid Effects As Much As Possible
 
 Instead of using the following `useEffect` in `WashAnimator.Root`:
 
