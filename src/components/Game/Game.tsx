@@ -3,7 +3,7 @@
 import * as React from "react";
 import styled from "styled-components";
 
-import Deck from "../Deck";
+import Deck, { DeckHandle } from "../Deck";
 import Table from "../Table";
 import Button from "../Button";
 import Spacer from "../Spacer";
@@ -14,27 +14,21 @@ import InstructionBanner from "../InstructionBanner";
 import { useInstruction } from "../InstructionProvider";
 import { Info } from "lucide-react";
 import ControlPanel from "./ControlPanel";
-import useDeck from "../Deck/useDeck";
 
 function Game({ onReset, isResetting }: Props) {
   const {
-    cardsGrid: fakeShuffleCardsGrid,
+    cardsGrid: fakeShuffledCardsGrid,
     setCards: setFakeShuffleCards,
     fakeShuffle,
     trackedCard,
   } = useFakeShuffleTracker();
 
-  const {
-    deck,
-    status: deckStatus,
-    shuffle,
-    drawCards,
-    markShuffleComplete,
-  } = useDeck();
   const [gameStatus, setGameStatus] = React.useState<GameStatus>("idle");
   const [numRowsPicked, setNumRowsPicked] = React.useState(0);
+  const [disableControls, setDisableControls] = React.useState(false);
 
-  const tableCardsGrid = useTableCards(gameStatus, fakeShuffleCardsGrid);
+  const tableCardsGrid = useTableCards(gameStatus, fakeShuffledCardsGrid);
+  const deckRef = React.useRef<DeckHandle>(null);
 
   const { showInstruction } = useInstruction();
   React.useEffect(() => {
@@ -71,12 +65,17 @@ function Game({ onReset, isResetting }: Props) {
 
   function initiateGame() {
     setGameStatus("playing");
-    setFakeShuffleCards(drawCards());
+    setFakeShuffleCards(deckRef.current?.drawCards() ?? []);
   }
 
-  function handleShuffleComplete() {
-    markShuffleComplete();
+  function enableControls() {
     showInstruction("Click Start to begin!");
+    setDisableControls(false);
+  }
+
+  function shuffleDeck() {
+    setDisableControls(true);
+    deckRef.current?.shuffle();
   }
 
   const isIdle = gameStatus === "idle";
@@ -91,9 +90,8 @@ function Game({ onReset, isResetting }: Props) {
     <Wrapper>
       <TopPanelWrapper>
         <Deck
-          deck={deck}
-          status={deckStatus}
-          onShuffleAnimationComplete={handleShuffleComplete}
+          ref={deckRef}
+          onShuffleAnimationComplete={enableControls}
         />
         {instructionBanner}
         <Button
@@ -117,8 +115,8 @@ function Game({ onReset, isResetting }: Props) {
       )}
       <ControlPanel
         showControls={isIdle}
-        disabled={deckStatus === "animating-shuffle"}
-        onShuffle={shuffle}
+        disabled={disableControls}
+        onShuffle={shuffleDeck}
         onStart={initiateGame}
         onAbout={() => {}}
       />
