@@ -29,7 +29,7 @@ function Deck({ onShuffleAnimationComplete, ref }: Props) {
   }));
 
   return (
-    <Wrapper>
+    <Wrapper aria-label="A deck of 52 cards">
       <WashAnimator.Root
         animate={isAnimatingShuffle}
         onComplete={() => {

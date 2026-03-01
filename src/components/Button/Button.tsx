@@ -78,7 +78,7 @@ export default function Button({
         >
           <ButtonText>{children}</ButtonText>
           <CardWrapper>
-            <BlueBack />
+            <BlueBack aria-hidden={true} />
           </CardWrapper>
         </Wrapper>
       )}
