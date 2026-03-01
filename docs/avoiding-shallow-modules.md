@@ -20,4 +20,6 @@ Why should the `Game` component know about the `status` of the deck? Why should 
 <Deck ref={deckRef} onShuffleAnimationComplete={enableControls} />
 ```
 
-The `deckRef` exposes only the `shuffle` and `drawCards` methods—the two things that the `Game` component really cares about.
+The `deckRef` exposes only the `shuffle` and `drawCards` methods—the two things that the `Game` component really cares about. The `Deck` component uses `useImperativeHandle` to expose only these two methods. You can see the ful implementation of the `Deck` component [here][1].
+
+[1]: https://github.com/andrewnessinjim/card-trick/blob/main/src/components/Deck/Deck.tsx
